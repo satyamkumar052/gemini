@@ -87,7 +87,7 @@ router.post("/chat", async (req,res) => {
     
     try {
 
-        let thread = await Thread.findOne({threadId});
+        let thread = await Thread.findOne({ threadId });
 
         if(!thread) {
             thread = new Thread({
@@ -99,7 +99,9 @@ router.post("/chat", async (req,res) => {
             thread.messages.push({ role : "user", content : message });
         }
 
-        const assistentReply = await getGeminiResponse(message);
+        //pass the entire message history for context
+
+        const assistentReply = await getGeminiResponse(thread.messages);
 
         thread.messages.push({ role : "assistent", content : assistentReply });
 

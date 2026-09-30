@@ -12,19 +12,22 @@ const getGeminiResponse = async(message) => {
 
     try {
 
-        const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
-        contents: [
-            {
-            role: "user",
-            parts: [{ 
-                    text: message
-                }],
-            },
-        ],
-        });
+        let contents = [];
 
-        return response.candidates[0].content.parts[0].text;
+        if(Array.isArray(message)) {
+            contents = message.map((msg) => ({
+                role: msg.role ==="user" ? "user" : "model",
+                parts: [{ text : msg.content || ""}],
+            }));
+        } else if(typeof message ==="string") {
+            contents = [{ role : "user", parts: [{ text:message }]}];
+        }
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents : contents,
+        });
+        return response.text;
 
     } catch (err) {
         throw new Error(err.message);
