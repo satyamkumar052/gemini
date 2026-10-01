@@ -25,7 +25,7 @@ router.post('/test', async (req, res) => {
 router.get("/thread", async (req, res) => {
     try {
 
-        const threads = await Thread.find({}).sort({updatedAt : -1});
+        const threads = await Thread.find({}).select("-_id threadId title").sort({updatedAt : -1});
 
         res.json(threads);
         
@@ -50,7 +50,7 @@ router.get("/thread/:threadId", async (req, res) => {
         
     } catch (err) {
         console.log(err);
-        res.status(500).json({message:"Failed to fetch thread"});
+        res.status(500).json({message:"Failed to fetch chat"});
     }
 
 });
@@ -113,6 +113,7 @@ router.post("/chat", async (req,res) => {
         
     } catch (err) {
         console.log(err);
+        res.status(500).json({message:"Failed to generate response"});
     }
 })
 
