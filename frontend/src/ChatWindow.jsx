@@ -3,6 +3,7 @@ import "./ChatWindow.css";
 import Chat from "./Chat.jsx";
 import { MyContext } from './MyContext.jsx';
 import { ScaleLoader } from "react-spinners";
+import { clientServer } from './clientServer.js';
 
 
 function ChatWindow() {
@@ -18,25 +19,17 @@ function ChatWindow() {
     const GetReply = async () => {
         setLoading(true);
         setNewChat(false);
-        const Options = {
-            method: "POST",
-            headers: {
-                "Content-Type" : "application/json"
-            },
-            body : JSON.stringify({
-                message: prompt,
-                threadId: currThreadId
-            }),
-        };
 
         try {
 
+            const response = await clientServer.post("/api/chat", {
+                message: prompt,
+                threadId: currThreadId
+            });
 
-            const response = await fetch("http://localhost:8080/api/chat", Options);
-            const data = await response.json();
+            const res = response.data;
 
-
-            setReply(data.reply);
+            setReply(res.reply);
             
         } catch (err) {
             console.log(err);
@@ -101,9 +94,6 @@ function ChatWindow() {
                 </div>
                 <p className="info">Gemini is AI and can make mistakes</p>
             </div>
-
-
-
 
         </div>
     );
