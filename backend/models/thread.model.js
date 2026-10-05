@@ -35,6 +35,14 @@ const ThreadSchema = new mongoose.Schema({
     updatedAt : {
         type : Date,
         default : Date.now
+    },
+    prompts: {
+        type: Number,
+        default: 0,
+    },
+    totalTokensUsed: {
+        type: Number,
+        default: 0,
     }
 });
 

@@ -27,6 +27,9 @@ function ChatLayout() {
     const [newChat, setNewChat] = useState(!threadId); // to trigger new chat creation
 
     const [allThreads, setAllThreads] = useState([]);
+
+    const [countPrompts, setCountPrompt] = useState(0);
+    const [totalTokensUsed, setTotalTokensUsed] = useState(0);
     
     const providerValue = {
         prompt, setPrompt,
@@ -35,7 +38,9 @@ function ChatLayout() {
         newChat, setNewChat,
         prevChats, setPrevChats,
         allThreads, setAllThreads,
-        user, setUser, logout
+        user, setUser, logout,
+        countPrompts, setCountPrompt,
+        totalTokensUsed, setTotalTokensUsed
     };
 
     useEffect(() => {
