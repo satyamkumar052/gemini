@@ -4,9 +4,14 @@ import Chat from "./Chat.jsx";
 import { MyContext } from './MyContext.jsx';
 import { ScaleLoader } from "react-spinners";
 import { clientServer } from './clientServer.js';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 function ChatWindow() {
+
+    const { threadId} = useParams();
+    const navigation = useNavigate();
 
 
     let [loading, setLoading] = useState(false);
@@ -17,6 +22,8 @@ function ChatWindow() {
     
 
     const GetReply = async () => {
+        if(!prompt.trim()) return;
+
         setLoading(true);
         setNewChat(false);
 
@@ -30,9 +37,15 @@ function ChatWindow() {
             const res = response.data;
 
             setReply(res.reply);
+
+            if(!threadId) {
+                navigation(`/${currThreadId}`, {replace:true});
+            }
             
         } catch (err) {
             console.log(err);
+            const errMsg = err.response?.data?.message || err.message || "Failed to get response";
+            toast.error(errMsg);
         }
         setLoading(false);
     }
