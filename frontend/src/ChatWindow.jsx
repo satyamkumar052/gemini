@@ -16,7 +16,7 @@ function ChatWindow() {
 
     let [loading, setLoading] = useState(false);
 
-    const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat} = useContext(MyContext);
+    const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat, user, logout } = useContext(MyContext);
 
     const [isOpen, setIsOpen] = useState(false);
     
@@ -81,7 +81,13 @@ function ChatWindow() {
 
                 <span>Gemini </span>
                 <div className="userIconDiv" onClick={handleProfileClick}>
-                    <span className="userIcon"><i className="fa-solid fa-user"></i></span>
+                    <span className="userIcon">
+                        {user ? (
+                            <strong style={{ fontSize: "14px", color: "#fff" }}>{user.name?.charAt(0).toUpperCase()}</strong>
+                        ) : (
+                            <i className="fa-solid fa-user"></i>
+                        )}
+                    </span>
                 </div>
 
             </div>
@@ -90,9 +96,28 @@ function ChatWindow() {
             {
                 isOpen && 
                 <div className='dropDown'>
-                    <div className='dropDownItem'><i class="fa-solid fa-cloud-arrow-up"></i> Upgrade plan</div>
-                    <div className='dropDownItem'><i class="fa-solid fa-gear"></i> Settings</div>
-                    <div className='dropDownItem'><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</div>
+                    {user ? (
+                        <>
+                            <div className='dropDownItem' style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "6px", cursor: "default" }}>
+                                <span style={{ fontWeight: "600", color: "#fff", display: "block" }}>{user.name}</span>
+                                <small style={{ color: "#9aa0a6", fontSize: "0.75rem" }}>{user.email}</small>
+                            </div>
+                            <div className='dropDownItem'><i className="fa-solid fa-cloud-arrow-up"></i> Upgrade plan</div>
+                            <div className='dropDownItem'><i className="fa-solid fa-gear"></i> Settings</div>
+                            <div className='dropDownItem' onClick={() => { setIsOpen(false); logout(); }}>
+                                <i className="fa-solid fa-arrow-right-from-bracket"></i> Log out
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className='dropDownItem' onClick={() => { setIsOpen(false); navigation("/login"); }}>
+                                <i className="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+                            </div>
+                            <div className='dropDownItem' onClick={() => { setIsOpen(false); navigation("/signup"); }}>
+                                <i className="fa-solid fa-user-plus"></i> Sign Up
+                            </div>
+                        </>
+                    )}
                 </div>
             }
 

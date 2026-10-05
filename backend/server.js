@@ -2,6 +2,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 import ChatRouter from "./routes/chat.routes.js";
+import AuthRouter from "./routes/auth.routes.js";
 
 
 import dns from "dns";
@@ -19,6 +20,7 @@ app.use(express.json());
 
 
 app.use("/api", ChatRouter);
+app.use("/api/auth", AuthRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello");

@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 function Sidebar() {
 
 
-    const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats } = useContext(MyContext);
+    const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, user } = useContext(MyContext);
 
     const navigation = useNavigate();
 
@@ -102,8 +102,30 @@ function Sidebar() {
             </ul>
 
 
-            <div className="sign">
-                <p>Sign In</p>
+            <div className="sign" onClick={() => !user && navigation("/login")} style={{ cursor: !user ? "pointer" : "default" }}>
+                {user ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: "center" }}>
+                        <span style={{
+                            width: "28px",
+                            height: "28px",
+                            borderRadius: "50%",
+                            backgroundColor: "#339cff",
+                            color: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: "bold",
+                            fontSize: "13px"
+                        }}>
+                            {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                        </span>
+                        <span style={{ maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "0.95rem" }}>
+                            {user.name}
+                        </span>
+                    </div>
+                ) : (
+                    <p style={{ margin: 0 }}>Sign In</p>
+                )}
             </div>
             
         </section>

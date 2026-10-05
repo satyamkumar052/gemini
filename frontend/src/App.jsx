@@ -2,17 +2,20 @@ import "./App.css";
 import Sidebar from "./Sidebar.jsx";
 import ChatWindow from "./ChatWindow.jsx";
 import {MyContext} from "./MyContext.jsx";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import {v1 as uuidv1} from "uuid";
-import {Routes, Route, useParams, useNavigate} from "react-router-dom";
+import { Routes, Route, useParams, useNavigate } from "react-router-dom";
 import { clientServer } from "./clientServer.js";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Login from "./Login.jsx";
+import Signup from "./Signup.jsx";
 
 function ChatLayout() {
 
     const { threadId } = useParams();
     const navigation = useNavigate();
+    const { user, setUser, logout } = useContext(MyContext);
 
     const [prompt, setPrompt] = useState("");
     const [reply, setReply] = useState(null);
@@ -21,7 +24,7 @@ function ChatLayout() {
 
     const [prevChats, setPrevChats] = useState([]); // stores all chats of curr thread
 
-    const [newChat, setNewChat] = useState(true); // to trigger new chat creation
+    const [newChat, setNewChat] = useState(!threadId); // to trigger new chat creation
 
     const [allThreads, setAllThreads] = useState([]);
     
@@ -31,7 +34,8 @@ function ChatLayout() {
         currThreadId, setCurrThreadId,
         newChat, setNewChat,
         prevChats, setPrevChats,
-        allThreads, setAllThreads
+        allThreads, setAllThreads,
+        user, setUser, logout
     };
 
     useEffect(() => {
@@ -60,19 +64,37 @@ function ChatLayout() {
                 <Sidebar></Sidebar>
                 <ChatWindow></ChatWindow>
             </div>
-            <ToastContainer position="top-right" autoClose={3000} theme='dark' />
         </MyContext.Provider>
     );
 }
 
 function App() {    
+    const [user, setUser] = useState(() => {
+        try {
+            const saved = localStorage.getItem("user");
+            return saved ? JSON.parse(saved) : null;
+        } catch {
+            return null;
+        }
+    });
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setUser(null);
+        toast.info("Signed out successfully");
+    };
 
     return (
-        <Routes>
-            <Route path='/' element={<ChatLayout />} />
-
-            <Route path='/:threadId' element={<ChatLayout />} />
-        </Routes>
+        <MyContext.Provider value={{ user, setUser, logout }}>
+            <Routes>
+                <Route path='/' element={<ChatLayout />} />
+                <Route path='/:threadId' element={<ChatLayout />} />
+                <Route path='/login' element={<Login />} />
+                <Route path='/signup' element={<Signup />} />
+            </Routes>
+            <ToastContainer position="top-right" autoClose={3000} theme='dark' />
+        </MyContext.Provider>
     );
 }
 
