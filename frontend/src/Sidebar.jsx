@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import {MyContext} from "./MyContext.jsx";
 import {v1 as uuidv1} from "uuid";
 import { clientServer } from "./clientServer.js";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -10,6 +11,8 @@ function Sidebar() {
 
 
     const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats } = useContext(MyContext);
+
+    const navigation = useNavigate();
 
     const getAllThreads = async () => {
 
@@ -37,34 +40,17 @@ function Sidebar() {
 
 
     const createNewChat = () => {
-        setNewChat(true);
+        setNewChat(true)
         setPrompt("");
         setReply(null);
         setCurrThreadId(uuidv1());
-        setPrevChats([]);
+        navigation("/");
     };
 
 
 
     const changethread = async (newThreadId) => {
-
-        setCurrThreadId(newThreadId);
-
-        try {
-            
-            const response = await clientServer.get(`/api/thread/${newThreadId}`);
-
-            const res = response.data;
-
-            setPrevChats(res);
-            setNewChat(false);
-
-            setReply(null);
-            
-        } catch (err) {
-            console.log(err);
-        }
-
+        navigation(`/${newThreadId}`);
     }
 
 
@@ -78,7 +64,7 @@ function Sidebar() {
             setAllThreads(prev => prev.filter(thread => thread.threadId !== threadId));
 
             if(threadId === currThreadId) {
-                createNewChat();
+                navigation("/");
             }
             
         } catch (err) {
