@@ -33,7 +33,7 @@ function Login() {
 
         setLoading(true);
         try {
-            const response = await clientServer.post("/api/auth/signin", formData);
+            const response = await clientServer.post("/api/auth/login", formData);
             const data = response.data;
 
             // Save to localStorage
