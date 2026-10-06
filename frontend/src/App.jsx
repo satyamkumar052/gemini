@@ -54,7 +54,7 @@ function ChatLayout() {
                 const messages = Array.isArray(res.data) ? res.data : (res.data?.messages || []);
                 const tokens = res.data?.totalTokensUsed || 0;
                 setPrevChats(messages);
-                const userPrompts = messages.filter(msg => msg.role === "user").length;
+                const userPrompts = res.data?.prompts !== undefined ? res.data.prompts : messages.filter(msg => msg.role === "user").length;
                 setCountPrompt(userPrompts);
                 setTotalTokensUsed(tokens);
             })

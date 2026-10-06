@@ -115,7 +115,8 @@ function Sidebar() {
                             alignItems: "center",
                             justifyContent: "center",
                             fontWeight: "bold",
-                            fontSize: "13px"
+                            fontSize: "13px",
+                            userSelect:"none",
                         }}>
                             {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                         </span>

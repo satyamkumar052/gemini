@@ -44,6 +44,7 @@ router.get("/thread/:threadId", async (req, res) => {
     res.json({
       messages: thread.messages,
       totalTokensUsed: thread.totalTokensUsed || 0,
+      prompts: thread.prompts || thread.messages.filter(m => m.role === "user").length,
     });
   } catch (err) {
     console.log(err);
@@ -82,13 +83,15 @@ router.post("/chat", async (req, res) => {
         threadId,
         title: message,
         messages: [{ role: "user", content: message }],
+        prompts: 1,
       });
     } else {
-      const userPromptCount = thread.messages.filter(m => m.role === "user").length;
-      if (userPromptCount >= 10) {
+      const currentPrompts = thread.prompts || thread.messages.filter(m => m.role === "user").length;
+      if (currentPrompts >= 10) {
         return res.status(403).json({ message: "Prompt limit reached for this chat (maximum 10 prompts). Please start a new chat." });
       }
       thread.messages.push({ role: "user", content: message });
+      thread.prompts = currentPrompts + 1;
     }
 
     //pass the entire message history for context
@@ -101,7 +104,11 @@ router.post("/chat", async (req, res) => {
     thread.updatedAt = new Date();
     await thread.save();
 
-    res.json({ reply: assistentReply, totalTokensUsed: thread.totalTokensUsed });
+    res.json({
+      reply: assistentReply,
+      totalTokensUsed: thread.totalTokensUsed,
+      prompts: thread.prompts
+    });
   } catch (err) {
     console.log(err);
     let errorMessage = err.message || "Failed to generate response";
