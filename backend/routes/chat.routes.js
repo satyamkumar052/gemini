@@ -41,7 +41,10 @@ router.get("/thread/:threadId", async (req, res) => {
 
     if (!thread) return res.status(404).json({ message: "Thread not found" });
 
-    res.json(thread.messages);
+    res.json({
+      messages: thread.messages,
+      totalTokensUsed: thread.totalTokensUsed || 0,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to fetch chat" });
@@ -81,24 +84,36 @@ router.post("/chat", async (req, res) => {
         messages: [{ role: "user", content: message }],
       });
     } else {
+      const userPromptCount = thread.messages.filter(m => m.role === "user").length;
+      if (userPromptCount >= 10) {
+        return res.status(403).json({ message: "Prompt limit reached for this chat (maximum 10 prompts). Please start a new chat." });
+      }
       thread.messages.push({ role: "user", content: message });
     }
 
     //pass the entire message history for context
 
-    const assistentReply = await getGeminiResponse(thread.messages);
+    const { text: assistentReply, totalTokenCount } = await getGeminiResponse(thread.messages);
 
     thread.messages.push({ role: "assistent", content: assistentReply });
+    thread.totalTokensUsed = (thread.totalTokensUsed || 0) + (totalTokenCount || 0);
 
     thread.updatedAt = new Date();
     await thread.save();
 
-    res.json({ reply: assistentReply });
+    res.json({ reply: assistentReply, totalTokensUsed: thread.totalTokensUsed });
   } catch (err) {
     console.log(err);
-    res
-      .status(500)
-      .json({ message: err.message || "Failed to generate response" });
+    let errorMessage = err.message || "Failed to generate response";
+    try {
+      const parsed = JSON.parse(err.message);
+      if (parsed.error?.message) {
+        errorMessage = parsed.error.message;
+      }
+    } catch (e) {
+      // already plain text
+    }
+    res.status(500).json({ message: errorMessage });
   }
 });
 
