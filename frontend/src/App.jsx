@@ -50,7 +50,14 @@ function ChatLayout() {
             setReply(null);
 
             clientServer.get(`/api/thread/${threadId}`)
-            .then(res => setPrevChats(res.data))
+            .then(res => {
+                const messages = Array.isArray(res.data) ? res.data : (res.data?.messages || []);
+                const tokens = res.data?.totalTokensUsed || 0;
+                setPrevChats(messages);
+                const userPrompts = messages.filter(msg => msg.role === "user").length;
+                setCountPrompt(userPrompts);
+                setTotalTokensUsed(tokens);
+            })
             .catch(err => {
                 console.log(err);
                 navigation("/");
@@ -60,6 +67,8 @@ function ChatLayout() {
             setPrevChats([]);
             setNewChat(true);
             setReply(null);
+            setCountPrompt(0);
+            setTotalTokensUsed(0);
         }
     }, [threadId, navigation]);
 

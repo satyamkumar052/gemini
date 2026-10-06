@@ -21,9 +21,14 @@ const getGeminiResponse = async (message) => {
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
+      // model: "gemini-3.8-flash",
       contents: contents,
     });
-    return response.text;
+
+    return {
+      text: response.text,
+      totalTokenCount: response.usageMetadata?.totalTokenCount || 0,
+    };
   } catch (err) {
     throw new Error(err.message);
   }
