@@ -42,7 +42,11 @@ function ChatWindow() {
             const res = response.data;
 
             setReply(res.reply);
-            setCountPrompt(prev => prev + 1);
+            if (res.prompts !== undefined) {
+                setCountPrompt(res.prompts);
+            } else {
+                setCountPrompt(prev => prev + 1);
+            }
             if (res.totalTokensUsed !== undefined) {
                 setTotalTokensUsed(res.totalTokensUsed);
             }
@@ -114,7 +118,7 @@ function ChatWindow() {
 
             {
                 isOpen && 
-                <div className='dropDown'>
+                <div className='dropDown' style={{userSelect:"none"}}>
                     {user ? (
                         <>
                             <div className='dropDownItem' style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "6px", cursor: "default" }}>
