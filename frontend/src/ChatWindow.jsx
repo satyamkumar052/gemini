@@ -19,13 +19,17 @@ function ChatWindow() {
     const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat, user, logout, totalTokensUsed, setTotalTokensUsed, countPrompts, setCountPrompt } = useContext(MyContext);
 
     const [isOpen, setIsOpen] = useState(false);
-    
+    const maxPrompts = user ? 10 : 5;
 
     const GetReply = async () => {
         if(!prompt.trim()) return;
 
-        if (countPrompts >= 10) {
-            toast.error("Prompt limit reached (10/10). Please create a new chat to continue.");
+        if (countPrompts >= maxPrompts) {
+            if(!user) {
+                toast.error("Guest limit reached (5/5). Please sign in to continue.");
+            } else {
+                toast.error("Prompt limit reached (10/10). Please create a new chat.");
+            }
             return;
         }
 
@@ -155,19 +159,22 @@ function ChatWindow() {
                         onChange={(e) => setPrompt(e.target.value)} 
                         onKeyDown={(e) => e.key==="Enter" ? GetReply() : null } 
                         type="text" 
-                        placeholder={countPrompts >= 10 ? "Prompt limit reached (10/10). Start a new chat." : "Ask anything"} 
-                        disabled={countPrompts >= 10 || loading}
+                        placeholder={
+                            countPrompts >= maxPrompts 
+                                ? (!user ? "Guest limit reached (5/5). Sign in to continue." : "Limit reached (10/10). Start new chat.")
+                                : "Ask anything"}
+                        disabled={countPrompts >= maxPrompts || loading}
                     />
                     <div 
                         id='submit' 
                         onClick={GetReply}
-                        style={{ opacity: countPrompts >= 10 ? 0.4 : 1, cursor: countPrompts >= 10 ? "not-allowed" : "pointer" }}
+                        style={{ opacity: countPrompts >= maxPrompts ? 0.4 : 1, cursor: countPrompts >= maxPrompts ? "not-allowed" : "pointer" }}
                     >
                         <i className="fa-solid fa-paper-plane"></i>
                     </div>
                 </div>
                 <p className="info">
-                    Gemini is AI and can make mistakes • Prompts: {countPrompts}/10
+                    Gemini is AI and can make mistakes • Prompts: {countPrompts}/{maxPrompts} {!user && "(Guest mode)"}
                 </p>
                 <div className='gptDiv'>
                     <p>Tokens used: {totalTokensUsed}</p>
