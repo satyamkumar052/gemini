@@ -92,10 +92,13 @@ function App() {
         }
     });
 
+    const navigation = useNavigate();
+
     const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         setUser(null);
+        navigation("/")
         toast.info("Signed out successfully");
     };
 

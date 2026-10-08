@@ -24,7 +24,6 @@ function Sidebar() {
 
             const filteredData = res.map(thread => ({threadId : thread.threadId, title: thread.title}));
 
-
             setAllThreads(filteredData);
             
         } catch (err) {
@@ -34,9 +33,12 @@ function Sidebar() {
 
     useEffect(() => {
 
-        getAllThreads();
-
-    }, [currThreadId]);
+        if(user) {
+            getAllThreads();
+        } else {
+            setAllThreads([]);
+        }
+    }, [currThreadId, user]);
 
 
     const createNewChat = () => {
