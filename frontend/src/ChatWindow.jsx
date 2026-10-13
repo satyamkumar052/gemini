@@ -21,6 +21,16 @@ function ChatWindow() {
     const [isOpen, setIsOpen] = useState(false);
     const maxPrompts = user ? 10 : 5;
 
+    const MODELS = [
+        { id: "gemini-2.5-flash", label: "Gemini 2.5 Flash", badge: "Stable" },
+        { id: "gemini-3.1-pro-preview", label: "Gemini 3.1 Pro Preview", badge: "Thinking" },
+        { id: "gemini-1.5-flash", label: "Gemini 1.5 Flash", badge: "Fast" },
+        { id: "gemini-3.8-flash", label: "Gemini 3.8 Flash", badge: "Preview" },
+    ];
+
+    const [selectedModel, setSelectedModel] = useState(MODELS[0].id);
+    const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false);
+
     const GetReply = async () => {
         if(!prompt.trim()) return;
 
@@ -40,7 +50,8 @@ function ChatWindow() {
 
             const response = await clientServer.post("/api/chat", {
                 message: prompt,
-                threadId: currThreadId
+                threadId: currThreadId,
+                model: selectedModel,
             });
 
             const res = response.data;
@@ -105,8 +116,7 @@ function ChatWindow() {
     return (
         <div className="chatWindow">
             <div className="navbar">
-
-                <span>Gemini </span>
+                <span className="logoTitle">Gemini</span>
                 <div className="userIconDiv" onClick={handleProfileClick}>
                     <span className="userIcon">
                         {user ? (
@@ -116,7 +126,6 @@ function ChatWindow() {
                         )}
                     </span>
                 </div>
-
             </div>
 
 
@@ -165,12 +174,51 @@ function ChatWindow() {
                                 : "Ask anything"}
                         disabled={countPrompts >= maxPrompts || loading}
                     />
-                    <div 
-                        id='submit' 
-                        onClick={GetReply}
-                        style={{ opacity: countPrompts >= maxPrompts ? 0.4 : 1, cursor: countPrompts >= maxPrompts ? "not-allowed" : "pointer" }}
-                    >
-                        <i className="fa-solid fa-paper-plane"></i>
+                    
+                    <div className="inputControls">
+                        {/* Model Dropdown inside prompt box before submit */}
+                        <div className="modelSelectorWrapper">
+                            <button 
+                                type="button"
+                                onClick={() => setIsModalDropDownOpen(!isModalDropDownOpen)} 
+                                className="modelSelectorBtn"
+                            >
+                                <span>{MODELS.find(m => m.id === selectedModel)?.label}</span>
+                                <i className={`fa-solid fa-chevron-${isModalDropDownOpen ? "down" : "up"}`}></i>
+                            </button>
+
+                            {isModalDropDownOpen && (
+                                <div className="modelDropdownMenu">
+                                    {MODELS.map(model => (
+                                        <div 
+                                            key={model.id} 
+                                            className={`modelOptionItem ${selectedModel === model.id ? "active" : ""}`} 
+                                            onClick={() => {
+                                                setSelectedModel(model.id); 
+                                                setIsModalDropDownOpen(false); 
+                                            }}
+                                        >
+                                            <div className="modelOptionInfo">
+                                                <span className="modelOptionTitle">{model.label}</span>
+                                                {model.badge && <span className="modelOptionBadge">{model.badge}</span>}
+                                            </div>
+                                            {selectedModel === model.id && (
+                                                <i className="fa-solid fa-check modelCheckIcon"></i>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Submit Button */}
+                        <div 
+                            id='submit' 
+                            onClick={GetReply}
+                            style={{ opacity: countPrompts >= maxPrompts ? 0.4 : 1, cursor: countPrompts >= maxPrompts ? "not-allowed" : "pointer" }}
+                        >
+                            <i className="fa-solid fa-paper-plane"></i>
+                        </div>
                     </div>
                 </div>
                 <p className="info">

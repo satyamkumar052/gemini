@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GENAI_API_KEY,
 });
 
-const getGeminiResponse = async (message) => {
+const getGeminiResponse = async (message, model = "gemini-2.5-flash") => {
   try {
     let contents = [];
 
@@ -20,8 +20,7 @@ const getGeminiResponse = async (message) => {
     }
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      // model: "gemini-3.8-flash",
+      model: model,
       contents: contents,
     });
 

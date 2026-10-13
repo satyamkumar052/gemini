@@ -14,16 +14,26 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0.8rem 1.5rem;
+    box-sizing: border-box;
 }
 
-.navbar span {
-    margin: 1rem 2rem;
-    font-weight: 500;
+.navbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logoTitle {
+    font-weight: 600;
     font-size: 20px;
+    color: #fff;
+    user-select: none;
+    letter-spacing: 0.5px;
 }
 
 .userIconDiv {
-    margin: 1rem 2rem;
+    cursor: pointer;
 }
 
 .userIcon {
@@ -52,31 +62,17 @@
     position: relative;
     max-width: 43.75rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-}
-
-.inputBox > div {
-    background-color: #339cff;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.inputBox div i {
-    font-size: 1rem;
-    position: relative;
-    left: -1px;
 }
 
 input {
     width: 100%;
     border: none;
     background-color: rgba(255, 255, 255, 0.05);
-    padding: 20px;
-    font-size: 0.8rem;
+    padding: 18px 230px 18px 24px;
+    font-size: 0.9rem;
     border-radius: 28px;
+    color: #ececec;
     box-shadow: rgba(0, 0, 0, 0.05) 0 54px 55px,
                 rgba(0, 0, 0, 0.05) 0 -12px 30px,
                 rgba(0, 0, 0, 0.05) 0 4px 6px,
@@ -88,19 +84,36 @@ input:focus {
     outline: none;
 }
 
+.inputControls {
+    position: absolute;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 #submit {
     cursor: pointer;
     height: 35px;
     width: 35px;
-    font-size: 20px;
-    position: absolute;
-    right: 15px;
+    background-color: #339cff;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1rem;
+    color: #fff;
+    flex-shrink: 0;
+    transition: background-color 0.2s;
 }
 
-#submit i:hover {
+#submit i {
+    position: relative;
+    left: -1px;
+}
+
+#submit:hover {
+    background-color: #1982ea;
     color: #fff;
 }
 
@@ -135,4 +148,89 @@ input:focus {
     background-color: rgba(180, 180, 180, 0.1);
     border-radius: 6px;
     
+}
+
+/* Model Selector Dropdown */
+.modelSelectorWrapper {
+    position: relative;
+}
+
+.modelSelectorBtn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    color: #e3e3e3;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.modelSelectorBtn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.modelSelectorBtn i {
+    font-size: 10px;
+    color: #9aa0a6;
+}
+
+.modelDropdownMenu {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: 0;
+    width: 250px;
+    background-color: #1e1f20;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+    z-index: 1000;
+    text-align: left;
+}
+
+.modelOptionItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modelOptionItem:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.modelOptionItem.active {
+    background-color: rgba(66, 133, 244, 0.15);
+}
+
+.modelOptionInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.modelOptionTitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.modelOptionBadge {
+    font-size: 11px;
+    color: #9aa0a6;
+}
+
+.modelCheckIcon {
+    color: #4285f4;
+    font-size: 13px;
 }
