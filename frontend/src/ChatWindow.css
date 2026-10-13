@@ -112,7 +112,7 @@ input {
     width: 100%;
     border: none;
     background-color: rgba(255, 255, 255, 0.05);
-    padding: 18px 230px 18px 24px;
+    padding: 18px 230px 18px 54px;
     font-size: 0.9rem;
     border-radius: 28px;
     color: #ececec;
@@ -133,6 +133,30 @@ input:focus {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.imageUploadBtn {
+    position: absolute;
+    left: 14px;
+    z-index: 2;
+    cursor: pointer;
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #9aa0a6;
+    background: transparent;
+    transition: all 0.2s ease;
+    border: none;
+    user-select: none;
+}
+
+.imageUploadBtn:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 #submit {

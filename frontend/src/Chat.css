@@ -26,6 +26,33 @@
     border-top-right-radius: 5px !important;
 }
 
+.chatBubbleImage {
+    max-width: 100%;
+    max-height: 260px;
+    border-radius: 12px;
+    display: block;
+    object-fit: cover;
+    margin-bottom: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.15s ease-in-out;
+}
+
+.chatBubbleImage:hover {
+    transform: scale(1.01);
+}
+
+.chatBubbleImage:last-child {
+    margin-bottom: 0;
+}
+
+.userMessageText {
+    margin: 0;
+    word-break: break-word;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
 .chats::-webkit-scrollbar {
     width: 6px;
 }

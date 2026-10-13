@@ -12,15 +12,30 @@ const getGeminiResponse = async (message, model = "gemini-2.5-flash", image = nu
 
     if (Array.isArray(message)) {
       contents = message.map((msg, index) => {
-        let parts = [{ text: msg.content || "" }];
+        let parts = [];
 
-        if (index === message.length - 1 && image && image.data) {
+        if (msg.content) {
+          parts.push({ text: msg.content });
+        }
+
+        if (msg.image && msg.image.data) {
+          parts.push({
+            inlineData: {
+              data: msg.image.data,
+              mimeType: msg.image.mimeType || "image/png",
+            },
+          });
+        } else if (index === message.length - 1 && image && image.data) {
           parts.push({
             inlineData: {
               data: image.data,
               mimeType: image.mimeType || "image/png",
             },
           });
+        }
+
+        if (parts.length === 0) {
+          parts.push({ text: "" });
         }
 
         return {

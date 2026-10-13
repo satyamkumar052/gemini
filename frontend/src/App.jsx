@@ -31,6 +31,31 @@ function ChatLayout() {
     const [countPrompts, setCountPrompt] = useState(0);
     const [totalTokensUsed, setTotalTokensUsed] = useState(0);
     
+    const getAllThreads = async () => {
+        if (!user) {
+            return;
+        }
+        try {
+            const response = await clientServer.get("/api/thread");
+            const res = response.data;
+            const filteredData = res.map(thread => ({
+                threadId: thread.threadId,
+                title: thread.title
+            }));
+            setAllThreads(filteredData);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        if (user) {
+            getAllThreads();
+        } else {
+            setAllThreads([]);
+        }
+    }, [user]);
+
     const providerValue = {
         prompt, setPrompt,
         reply, setReply,
@@ -38,6 +63,7 @@ function ChatLayout() {
         newChat, setNewChat,
         prevChats, setPrevChats,
         allThreads, setAllThreads,
+        getAllThreads,
         user, setUser, logout,
         countPrompts, setCountPrompt,
         totalTokensUsed, setTotalTokensUsed
@@ -45,23 +71,27 @@ function ChatLayout() {
 
     useEffect(() => {
         if(threadId) {
-            setCurrThreadId(threadId);
-            setNewChat(false);
-            setReply(null);
+            if(threadId !== currThreadId) {
+                setCurrThreadId(threadId);
+                setNewChat(false);
+                setReply(null);
 
-            clientServer.get(`/api/thread/${threadId}`)
-            .then(res => {
-                const messages = Array.isArray(res.data) ? res.data : (res.data?.messages || []);
-                const tokens = res.data?.totalTokensUsed || 0;
-                setPrevChats(messages);
-                const userPrompts = res.data?.prompts !== undefined ? res.data.prompts : messages.filter(msg => msg.role === "user").length;
-                setCountPrompt(userPrompts);
-                setTotalTokensUsed(tokens);
-            })
-            .catch(err => {
-                console.log(err);
-                navigation("/");
-            });
+                clientServer.get(`/api/thread/${threadId}`)
+                .then(res => {
+                    const messages = Array.isArray(res.data) ? res.data : (res.data?.messages || []);
+                    const tokens = res.data?.totalTokensUsed || 0;
+                    setPrevChats(messages);
+                    const userPrompts = res.data?.prompts !== undefined ? res.data.prompts : messages.filter(msg => msg.role === "user").length;
+                    setCountPrompt(userPrompts);
+                    setTotalTokensUsed(tokens);
+                })
+                .catch(err => {
+                    console.log(err);
+                    navigation("/");
+                });
+            } else {
+                setNewChat(false);
+            }
         } else {
             setCurrThreadId(uuidv1());
             setPrevChats([]);

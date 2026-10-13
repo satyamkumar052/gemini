@@ -10,39 +10,19 @@ import { useNavigate } from "react-router-dom";
 function Sidebar() {
 
 
-    const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, user } = useContext(MyContext);
+    const {allThreads, setAllThreads, getAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, user } = useContext(MyContext);
 
     const navigation = useNavigate();
 
-    const getAllThreads = async () => {
-
-        try {
-
-            const response = await clientServer.get("/api/thread");
-
-            const res = await response.data;
-
-            const filteredData = res.map(thread => ({threadId : thread.threadId, title: thread.title}));
-
-            setAllThreads(filteredData);
-            
-        } catch (err) {
-            console.log(err);          
-        }
-    }
-
     useEffect(() => {
-
-        if(user) {
+        if(user && getAllThreads) {
             getAllThreads();
-        } else {
-            setAllThreads([]);
         }
-    }, [currThreadId, user]);
+    }, [user]);
 
 
     const createNewChat = () => {
-        setNewChat(true)
+        setNewChat(true);
         setPrompt("");
         setReply(null);
         setCurrThreadId(uuidv1());
@@ -52,6 +32,7 @@ function Sidebar() {
 
 
     const changethread = async (newThreadId) => {
+        setCurrThreadId(newThreadId);
         navigation(`/${newThreadId}`);
     }
 

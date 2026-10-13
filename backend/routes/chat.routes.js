@@ -83,12 +83,21 @@ router.post("/chat", optionalAuth, async (req, res) => {
   try {
     let thread = await Thread.findOne({ threadId });
 
+    const userMessageObj = {
+      role: "user",
+      content: message,
+      image: image && image.data ? {
+        data: image.data,
+        mimeType: image.mimeType || "image/png"
+      } : null,
+    };
+
     if (!thread) {
       thread = new Thread({
         threadId,
         userId: req.user ? req.user.id : null,
         title: message,
-        messages: [{ role: "user", content: message }],
+        messages: [userMessageObj],
         prompts: 1,
       });
     } else {
@@ -105,7 +114,7 @@ router.post("/chat", optionalAuth, async (req, res) => {
         thread.userId = req.user.id;
       }
 
-      thread.messages.push({ role: "user", content: message });
+      thread.messages.push(userMessageObj);
       thread.prompts = currentPrompts + 1;
     }
 

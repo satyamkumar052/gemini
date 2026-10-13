@@ -17,7 +17,7 @@ function ChatWindow() {
 
     let [loading, setLoading] = useState(false);
 
-    const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat, user, logout, totalTokensUsed, setTotalTokensUsed, countPrompts, setCountPrompt } = useContext(MyContext);
+    const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat, user, logout, totalTokensUsed, setTotalTokensUsed, countPrompts, setCountPrompt, allThreads, setAllThreads, getAllThreads } = useContext(MyContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const maxPrompts = user ? 10 : 5;
@@ -33,7 +33,7 @@ function ChatWindow() {
     const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false);
 
     const GetReply = async () => {
-        if(!prompt.trim()) return;
+        if(!prompt.trim() && !selectedImage) return;
 
         if (countPrompts >= maxPrompts) {
             if(!user) {
@@ -47,20 +47,48 @@ function ChatWindow() {
         setLoading(true);
         setNewChat(false);
 
+        const sentPrompt = prompt.trim() || (selectedImage ? "Describe this image" : "");
+        const sentImage = selectedImage;
+
+        const isFirstChat = !threadId || prevChats.length === 0;
+
+        // Immediately update sidebar so the user sees the new active thread highlighted
+        if (isFirstChat) {
+            setAllThreads(prev => [
+                { threadId: currThreadId, title: sentPrompt },
+                ...prev.filter(t => t.threadId !== currThreadId)
+            ]);
+            setCurrThreadId(currThreadId);
+        }
+
+        setPrompt("");
+        setSelectedImage(null);
+
         try {
 
             const response = await clientServer.post("/api/chat", {
-                message: prompt,
+                message: sentPrompt,
                 threadId: currThreadId,
                 model: selectedModel,
-                image: selectedImage ? { data: selectedImage.base64, mimeType: selectedImage.mimeType } : null
+                image: sentImage ? { data: sentImage.base64, mimeType: sentImage.mimeType } : null
             });
-
-            setSelectedImage(null);
 
             const res = response.data;
 
             setReply(res.reply);
+            setPrevChats(prevChats => [
+                ...prevChats,
+                {
+                    role: "user",
+                    content: sentPrompt,
+                    image: sentImage ? { data: sentImage.base64, mimeType: sentImage.mimeType } : null
+                },
+                {
+                    role: "assistent",
+                    content: res.reply
+                }
+            ]);
+
             if (res.prompts !== undefined) {
                 setCountPrompt(res.prompts);
             } else {
@@ -72,6 +100,10 @@ function ChatWindow() {
 
             if(!threadId) {
                 navigation(`/${currThreadId}`, {replace:true});
+            }
+
+            if (user && getAllThreads) {
+                getAllThreads();
             }
             
         } catch (err) {
@@ -117,24 +149,20 @@ function ChatWindow() {
         }
     }
 
-
-    // append new chats 
-    useEffect(() => {
-        if(prompt && reply) {
-            setPrevChats(prevChats => (
-                [...prevChats, 
-                {
-                    role:"user",
-                    content: prompt
-                },{
-                    role:"assistent",
-                    content: reply
-                }]
-            ));
-        }
-
-        setPrompt("")
-    }, [reply]);
+    const handleImageSelect = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setSelectedImage({
+                preview: URL.createObjectURL(file),
+                base64: reader.result.split(",")[1],
+                mimeType: file.type
+            });
+        };
+        reader.readAsDataURL(file);
+        e.target.value = "";
+    };
 
 
     const handleProfileClick = () => {
@@ -200,6 +228,18 @@ function ChatWindow() {
                     </div>
                 )}
                 <div className="inputBox">
+                    {/* Attach Image Button */}
+                        <label className="imageUploadBtn" title="Attach image">
+                            <i className="fa-regular fa-image"></i>
+                            <input 
+                                type="file" 
+                                accept="image/*" 
+                                style={{ display: "none" }} 
+                                onChange={handleImageSelect}
+                                disabled={countPrompts >= maxPrompts || loading}
+                            />
+                        </label>
+                        
                     <input 
                         value={prompt} 
                         onChange={(e) => setPrompt(e.target.value)} 
@@ -253,7 +293,10 @@ function ChatWindow() {
                         <div 
                             id='submit' 
                             onClick={GetReply}
-                            style={{ opacity: countPrompts >= maxPrompts ? 0.4 : 1, cursor: countPrompts >= maxPrompts ? "not-allowed" : "pointer" }}
+                            style={{ 
+                                opacity: (countPrompts >= maxPrompts || (!prompt.trim() && !selectedImage)) ? 0.4 : 1, 
+                                cursor: (countPrompts >= maxPrompts || (!prompt.trim() && !selectedImage)) ? "not-allowed" : "pointer" 
+                            }}
                         >
                             <i className="fa-solid fa-paper-plane"></i>
                         </div>

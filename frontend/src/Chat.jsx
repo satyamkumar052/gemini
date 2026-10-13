@@ -50,7 +50,16 @@ function Chat() {
                         return(<div className={chat.role === "user" ? "userDiv" : "gptDiv"} key={idx}>
                             {
                                 chat.role === "user" ?
-                                    <p className="userMessage">{chat.content}</p>
+                                    <div className="userMessage">
+                                        {chat.image?.data && (
+                                            <img
+                                                src={`data:${chat.image.mimeType || 'image/png'};base64,${chat.image.data}`}
+                                                alt="User attachment"
+                                                className="chatBubbleImage"
+                                            />
+                                        )}
+                                        {chat.content && <p className="userMessageText">{chat.content}</p>}
+                                    </div>
                                     :
                                     <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{chat.content}</ReactMarkDown>
                             }
@@ -70,9 +79,26 @@ function Chat() {
                 {
                     prevChats.length > 0 && latestReply ===null && 
 
-                    <div className='gptDiv' key={"non-typing"}>
-                        <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{prevChats[prevChats.length-1].content}</ReactMarkDown>
-                    </div>
+                    (prevChats[prevChats.length - 1].role === "user" ? (
+                        <div className="userDiv" key={"last-user"}>
+                            <div className="userMessage">
+                                {prevChats[prevChats.length - 1].image?.data && (
+                                    <img
+                                        src={`data:${prevChats[prevChats.length - 1].image.mimeType || 'image/png'};base64,${prevChats[prevChats.length - 1].image.data}`}
+                                        alt="User attachment"
+                                        className="chatBubbleImage"
+                                    />
+                                )}
+                                {prevChats[prevChats.length - 1].content && (
+                                    <p className="userMessageText">{prevChats[prevChats.length - 1].content}</p>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className='gptDiv' key={"non-typing"}>
+                            <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{prevChats[prevChats.length-1].content}</ReactMarkDown>
+                        </div>
+                    ))
                 }
 
 
