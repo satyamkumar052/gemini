@@ -13,6 +13,7 @@ function ChatWindow() {
     const { threadId} = useParams();
     const navigation = useNavigate();
 
+    const [selectedImage, setSelectedImage] = useState(null);
 
     let [loading, setLoading] = useState(false);
 
@@ -52,7 +53,10 @@ function ChatWindow() {
                 message: prompt,
                 threadId: currThreadId,
                 model: selectedModel,
+                image: selectedImage ? { data: selectedImage.base64, mimeType: selectedImage.mimeType } : null
             });
+
+            setSelectedImage(null);
 
             const res = response.data;
 
@@ -86,6 +90,31 @@ function ChatWindow() {
             toast.error(errMsg);
         }
         setLoading(false);
+    }
+
+    const handlePaste = (e) => {
+        const items = e.clipboardData?.items;
+        if(!items) return;
+
+        for(let i = 0; i < items.length; i++) {
+            if(items[i].type.startsWith("image/")) {
+                e.preventDefault();
+                const file = items[i].getAsFile();
+                const reader = new FileReader();
+                
+                reader.onloadend = () => {
+                    setSelectedImage({
+                        preview: URL.createObjectURL(file),
+                        base64: reader.result.split(",")[1],
+                        mimeType: file.type
+                    });
+                };
+
+                reader.readAsDataURL(file);
+                break;
+                
+            }
+        }
     }
 
 
@@ -162,16 +191,25 @@ function ChatWindow() {
             <ScaleLoader color="white" loading={loading}></ScaleLoader>
             
             <div className="chatInput">
+                {selectedImage && (
+                    <div className='imagePreviewContainer'>
+                        <img src={selectedImage.preview} alt="pasted" className='pastedThumbnail' />
+                        <button className="removeImageBtn" onClick={() => setSelectedImage(null)}>
+                            <i className='fa-solid fa-xmark'></i>
+                        </button>
+                    </div>
+                )}
                 <div className="inputBox">
                     <input 
                         value={prompt} 
                         onChange={(e) => setPrompt(e.target.value)} 
                         onKeyDown={(e) => e.key==="Enter" ? GetReply() : null } 
+                        onPaste={handlePaste}
                         type="text" 
                         placeholder={
                             countPrompts >= maxPrompts 
                                 ? (!user ? "Guest limit reached (5/5). Sign in to continue." : "Limit reached (10/10). Start new chat.")
-                                : "Ask anything"}
+                                : "Ask anything or paste image" }
                         disabled={countPrompts >= maxPrompts || loading}
                     />
                     

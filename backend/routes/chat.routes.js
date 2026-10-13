@@ -71,7 +71,7 @@ router.delete("/thread/:threadId", optionalAuth, async (req, res) => {
 });
 
 router.post("/chat", optionalAuth, async (req, res) => {
-  const { threadId, message, model } = req.body;
+  const { threadId, message, model, image } = req.body;
 
   if (!threadId || !message) {
     return res.status(400).json({ message: "missing required fields" });
@@ -111,7 +111,7 @@ router.post("/chat", optionalAuth, async (req, res) => {
 
     //pass the entire message history for context
 
-    const { text: assistentReply, totalTokenCount } = await getGeminiResponse(thread.messages, model);
+    const { text: assistentReply, totalTokenCount } = await getGeminiResponse(thread.messages, model, image);
 
     thread.messages.push({ role: "assistent", content: assistentReply });
     thread.totalTokensUsed = (thread.totalTokensUsed || 0) + (totalTokenCount || 0);

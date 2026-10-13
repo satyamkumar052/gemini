@@ -47,8 +47,51 @@
     cursor: pointer;
 }
 
-/* chat Input */
+/* Image Preview Thumbnail */
+.imagePreviewContainer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+}
 
+.pastedThumbnail {
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.removeImageBtn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #323232;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    font-size: 11px;
+    transition: background-color 0.2s;
+}
+
+.removeImageBtn:hover {
+    background-color: #ea4335;
+}
+
+/* chat Input */
 .chatInput {
     width: 100%;
     display: flex;
