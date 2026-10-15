@@ -32,6 +32,12 @@ function Signup() {
             return;
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email.trim())) {
+            toast.error("Please enter a valid email address");
+            return;
+        }
+
         if (formData.password.length < 6) {
             toast.error("Password must be at least 6 characters long");
             return;
@@ -120,6 +126,7 @@ function Signup() {
                                 placeholder="At least 6 characters"
                                 value={formData.password}
                                 onChange={handleChange}
+                                minLength={6}
                                 required
                             />
                             <button

@@ -61,7 +61,18 @@ function Chat() {
                                         {chat.content && <p className="userMessageText">{chat.content}</p>}
                                     </div>
                                     :
-                                    <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{chat.content}</ReactMarkDown>
+                                    <div>
+                                        {chat.image?.data && (
+                                            <div className='generatedImageWrapper'>
+                                                <img
+                                                    src={`data:${chat.image.mimeType || 'image/jpeg'};base64,${chat.image.data}`}
+                                                    alt="Generated output"
+                                                    className="generatedImage"
+                                                />
+                                            </div>
+                                        )}
+                                        <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{chat.content}</ReactMarkDown>
+                                    </div>
                             }
                         </div>)
                     })
@@ -72,6 +83,15 @@ function Chat() {
                     prevChats.length > 0 && latestReply !==null && 
 
                     <div className='gptDiv' key={"typing"}>
+                        {prevChats[prevChats.length - 1]?.image?.data && (
+                            <div className='generatedImageWrapper'>
+                                <img
+                                    src={`data:${prevChats[prevChats.length - 1].image.mimeType || 'image/jpeg'};base64,${prevChats[prevChats.length - 1].image.data}`}
+                                    alt="Generated output"
+                                    className="generatedImage"
+                                />
+                            </div>
+                        )}
                         <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{latestReply}</ReactMarkDown>
                     </div>
                 }
@@ -96,6 +116,15 @@ function Chat() {
                         </div>
                     ) : (
                         <div className='gptDiv' key={"non-typing"}>
+                            {prevChats[prevChats.length - 1]?.image?.data && (
+                                <div className='generatedImageWrapper'>
+                                    <img
+                                        src={`data:${prevChats[prevChats.length - 1].image.mimeType || 'image/jpeg'};base64,${prevChats[prevChats.length - 1].image.data}`}
+                                        alt="Generated output"
+                                        className="generatedImage"
+                                    />
+                                </div>
+                            )}
                             <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{prevChats[prevChats.length-1].content}</ReactMarkDown>
                         </div>
                     ))

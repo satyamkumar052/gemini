@@ -80,6 +80,11 @@ router.post("/chat", optionalAuth, async (req, res) => {
   const isGuest = !req.user;
   const maxLimit = isGuest ? 5 : 10;
 
+  const lockedModels = ["gemini-4-argon", "gemini-nano-banana-2.1", "gemini-3.8-flash"];
+  if (lockedModels.includes(model) && isGuest) {
+    return res.status(403).json({ message: "This model is only available for signed-in users. Please sign in." });
+  }
+
   try {
     let thread = await Thread.findOne({ threadId });
 
@@ -120,9 +125,9 @@ router.post("/chat", optionalAuth, async (req, res) => {
 
     //pass the entire message history for context
 
-    const { text: assistentReply, totalTokenCount } = await getGeminiResponse(thread.messages, model, image);
+    const { text: assistentReply, totalTokenCount, image: generatedImage } = await getGeminiResponse(thread.messages, model, image);
 
-    thread.messages.push({ role: "assistent", content: assistentReply });
+    thread.messages.push({ role: "assistent", content: assistentReply, image: generatedImage });
     thread.totalTokensUsed = (thread.totalTokensUsed || 0) + (totalTokenCount || 0);
 
     thread.updatedAt = new Date();
@@ -131,7 +136,8 @@ router.post("/chat", optionalAuth, async (req, res) => {
     res.json({
       reply: assistentReply,
       totalTokensUsed: thread.totalTokensUsed,
-      prompts: thread.prompts
+      prompts: thread.prompts,
+      image: generatedImage
     });
   } catch (err) {
     console.log(err);

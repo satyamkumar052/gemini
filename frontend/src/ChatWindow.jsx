@@ -17,23 +17,47 @@ function ChatWindow() {
 
     let [loading, setLoading] = useState(false);
 
-    const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat, user, logout, totalTokensUsed, setTotalTokensUsed, countPrompts, setCountPrompt, allThreads, setAllThreads, getAllThreads } = useContext(MyContext);
+    const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat, user, logout, totalTokensUsed, setTotalTokensUsed, countPrompts, setCountPrompt, allThreads, setAllThreads, getAllThreads, skipNextFetchRef } = useContext(MyContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const maxPrompts = user ? 10 : 5;
 
     const MODELS = [
+        { id: "gemini-4-argon", label: "Gemini 4 Argon", badge: "Pro", lockedForGuests: true },
         { id: "gemini-2.5-flash", label: "Gemini 2.5 Flash", badge: "Stable" },
         { id: "gemini-3.1-pro-preview", label: "Gemini 3.1 Pro Preview", badge: "Thinking" },
         { id: "gemini-1.5-flash", label: "Gemini 1.5 Flash", badge: "Fast" },
-        { id: "gemini-3.8-flash", label: "Gemini 3.8 Flash", badge: "Preview" },
+        { id: "gemini-3.8-flash", label: "Gemini 3.8 Flash", badge: "Preview", lockedForGuests: true },
+        { id: "gemini-nano-banana-2.1", label: "Gemini Nano Banana 2.1", badge: "Nano", lockedForGuests: true },
     ];
 
-    const [selectedModel, setSelectedModel] = useState(MODELS[0].id);
+    const [selectedModel, setSelectedModel] = useState(MODELS[1].id);
     const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false);
+
+    const selectedModelObj = MODELS.find(m => m.id === selectedModel);
+
+    useEffect(() => {
+        if (!user && selectedModelObj?.lockedForGuests) {
+            setSelectedModel("gemini-2.5-flash");
+        }
+    }, [user, selectedModel]);
+
+    const handleSelectModel = (model) => {
+        if (model.lockedForGuests && !user) {
+            toast.info(`${model.label} is exclusively for signed-in users. Please sign in to unlock Pro models.`);
+            return;
+        }
+        setSelectedModel(model.id);
+        setIsModalDropDownOpen(false);
+    };
 
     const GetReply = async () => {
         if(!prompt.trim() && !selectedImage) return;
+
+        if (selectedModelObj?.lockedForGuests && !user) {
+            toast.error(`${selectedModelObj.label} is only available for signed-in users. Please sign in.`);
+            return;
+        }
 
         if (countPrompts >= maxPrompts) {
             if(!user) {
@@ -85,7 +109,8 @@ function ChatWindow() {
                 },
                 {
                     role: "assistent",
-                    content: res.reply
+                    content: res.reply,
+                    image: res.image || null
                 }
             ]);
 
@@ -99,6 +124,9 @@ function ChatWindow() {
             }
 
             if(!threadId) {
+                if (skipNextFetchRef) {
+                    skipNextFetchRef.current = true;
+                }
                 navigation(`/${currThreadId}`, {replace:true});
             }
 
@@ -267,24 +295,32 @@ function ChatWindow() {
 
                             {isModalDropDownOpen && (
                                 <div className="modelDropdownMenu">
-                                    {MODELS.map(model => (
-                                        <div 
-                                            key={model.id} 
-                                            className={`modelOptionItem ${selectedModel === model.id ? "active" : ""}`} 
-                                            onClick={() => {
-                                                setSelectedModel(model.id); 
-                                                setIsModalDropDownOpen(false); 
-                                            }}
-                                        >
-                                            <div className="modelOptionInfo">
-                                                <span className="modelOptionTitle">{model.label}</span>
-                                                {model.badge && <span className="modelOptionBadge">{model.badge}</span>}
+                                    {MODELS.map(model => {
+                                        const isLocked = model.lockedForGuests && !user;
+                                        return (
+                                            <div 
+                                                key={model.id} 
+                                                className={`modelOptionItem ${selectedModel === model.id ? "active" : ""} ${isLocked ? "locked" : ""}`} 
+                                                onClick={() => handleSelectModel(model)}
+                                                title={isLocked ? "Sign in to unlock Gemini 4 Argon" : ""}
+                                            >
+                                                <div className="modelOptionInfo">
+                                                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                                        <span className="modelOptionTitle">{model.label}</span>
+                                                        {isLocked && <i className="fa-solid fa-lock modelLockIcon" title="Requires Sign In"></i>}
+                                                    </div>
+                                                    {model.badge && (
+                                                        <span className={`modelOptionBadge ${model.badge === "Pro" ? "proBadge" : model.badge === "Nano" ? "nanoBadge" : ""}`}>
+                                                            {model.badge} {isLocked && "• Locked"}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {selectedModel === model.id && (
+                                                    <i className="fa-solid fa-check modelCheckIcon"></i>
+                                                )}
                                             </div>
-                                            {selectedModel === model.id && (
-                                                <i className="fa-solid fa-check modelCheckIcon"></i>
-                                            )}
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>
@@ -303,7 +339,7 @@ function ChatWindow() {
                     </div>
                 </div>
                 <p className="info">
-                    Gemini is AI and can make mistakes • Prompts: {countPrompts}/{maxPrompts} {!user && "(Guest mode)"}
+                    This is Ai and can make mistakes • Prompts: {countPrompts}/{maxPrompts} {!user && "(Guest mode)"}
                 </p>
                 <div className='gptDiv'>
                     <p>Tokens used: {totalTokensUsed}</p>

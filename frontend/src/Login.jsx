@@ -31,6 +31,17 @@ function Login() {
             return;
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email.trim())) {
+            toast.error("Please enter a valid email address");
+            return;
+        }
+
+        if (formData.password.length < 6) {
+            toast.error("Password must be at least 6 characters long");
+            return;
+        }
+
         setLoading(true);
         try {
             const response = await clientServer.post("/api/auth/login", formData);
@@ -97,6 +108,7 @@ function Login() {
                                 placeholder="Enter your password"
                                 value={formData.password}
                                 onChange={handleChange}
+                                minLength={6}
                                 required
                             />
                             <button

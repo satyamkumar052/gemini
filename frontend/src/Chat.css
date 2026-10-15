@@ -53,6 +53,28 @@
     line-height: 1.5;
 }
 
+.generatedImageWrapper {
+    margin: 10px 0 14px 0;
+    max-width: 480px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.generatedImage {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.generatedImage:hover {
+    transform: scale(1.01);
+}
+
 .chats::-webkit-scrollbar {
     width: 6px;
 }
