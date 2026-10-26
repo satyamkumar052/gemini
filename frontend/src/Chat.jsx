@@ -50,9 +50,35 @@ function Chat() {
                         return(<div className={chat.role === "user" ? "userDiv" : "gptDiv"} key={idx}>
                             {
                                 chat.role === "user" ?
+<<<<<<< HEAD
                                     <p className="userMessage">{chat.content}</p>
                                     :
                                     <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{chat.content}</ReactMarkDown>
+=======
+                                    <div className="userMessage">
+                                        {chat.image?.data && (
+                                            <img
+                                                src={`data:${chat.image.mimeType || 'image/png'};base64,${chat.image.data}`}
+                                                alt="User attachment"
+                                                className="chatBubbleImage"
+                                            />
+                                        )}
+                                        {chat.content && <p className="userMessageText">{chat.content}</p>}
+                                    </div>
+                                    :
+                                    <div>
+                                        {chat.image?.data && (
+                                            <div className='generatedImageWrapper'>
+                                                <img
+                                                    src={`data:${chat.image.mimeType || 'image/jpeg'};base64,${chat.image.data}`}
+                                                    alt="Generated output"
+                                                    className="generatedImage"
+                                                />
+                                            </div>
+                                        )}
+                                        <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{chat.content}</ReactMarkDown>
+                                    </div>
+>>>>>>> origin/main
                             }
                         </div>)
                     })
@@ -63,6 +89,18 @@ function Chat() {
                     prevChats.length > 0 && latestReply !==null && 
 
                     <div className='gptDiv' key={"typing"}>
+<<<<<<< HEAD
+=======
+                        {prevChats[prevChats.length - 1]?.image?.data && (
+                            <div className='generatedImageWrapper'>
+                                <img
+                                    src={`data:${prevChats[prevChats.length - 1].image.mimeType || 'image/jpeg'};base64,${prevChats[prevChats.length - 1].image.data}`}
+                                    alt="Generated output"
+                                    className="generatedImage"
+                                />
+                            </div>
+                        )}
+>>>>>>> origin/main
                         <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{latestReply}</ReactMarkDown>
                     </div>
                 }
@@ -70,9 +108,41 @@ function Chat() {
                 {
                     prevChats.length > 0 && latestReply ===null && 
 
+<<<<<<< HEAD
                     <div className='gptDiv' key={"non-typing"}>
                         <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{prevChats[prevChats.length-1].content}</ReactMarkDown>
                     </div>
+=======
+                    (prevChats[prevChats.length - 1].role === "user" ? (
+                        <div className="userDiv" key={"last-user"}>
+                            <div className="userMessage">
+                                {prevChats[prevChats.length - 1].image?.data && (
+                                    <img
+                                        src={`data:${prevChats[prevChats.length - 1].image.mimeType || 'image/png'};base64,${prevChats[prevChats.length - 1].image.data}`}
+                                        alt="User attachment"
+                                        className="chatBubbleImage"
+                                    />
+                                )}
+                                {prevChats[prevChats.length - 1].content && (
+                                    <p className="userMessageText">{prevChats[prevChats.length - 1].content}</p>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className='gptDiv' key={"non-typing"}>
+                            {prevChats[prevChats.length - 1]?.image?.data && (
+                                <div className='generatedImageWrapper'>
+                                    <img
+                                        src={`data:${prevChats[prevChats.length - 1].image.mimeType || 'image/jpeg'};base64,${prevChats[prevChats.length - 1].image.data}`}
+                                        alt="Generated output"
+                                        className="generatedImage"
+                                    />
+                                </div>
+                            )}
+                            <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{prevChats[prevChats.length-1].content}</ReactMarkDown>
+                        </div>
+                    ))
+>>>>>>> origin/main
                 }
 
 

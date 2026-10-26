@@ -14,6 +14,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+<<<<<<< HEAD
 }
 
 .navbar span {
@@ -24,6 +25,28 @@
 
 .userIconDiv {
     margin: 1rem 2rem;
+=======
+    padding: 0.8rem 1.5rem;
+    box-sizing: border-box;
+}
+
+.navbarLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logoTitle {
+    font-weight: 600;
+    font-size: 20px;
+    color: #fff;
+    user-select: none;
+    letter-spacing: 0.5px;
+}
+
+.userIconDiv {
+    cursor: pointer;
+>>>>>>> origin/main
 }
 
 .userIcon {
@@ -37,6 +60,7 @@
     cursor: pointer;
 }
 
+<<<<<<< HEAD
 .backendStatus {
     box-sizing: border-box;
     width: calc(100% - 2rem);
@@ -76,6 +100,53 @@
 
 /* chat Input */
 
+=======
+/* Image Preview Thumbnail */
+.imagePreviewContainer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+}
+
+.pastedThumbnail {
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.removeImageBtn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #323232;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    font-size: 11px;
+    transition: background-color 0.2s;
+}
+
+.removeImageBtn:hover {
+    background-color: #ea4335;
+}
+
+/* chat Input */
+>>>>>>> origin/main
 .chatInput {
     width: 100%;
     display: flex;
@@ -89,6 +160,7 @@
     position: relative;
     max-width: 43.75rem;
     display: flex;
+<<<<<<< HEAD
     justify-content: space-between;
     align-items: center;
 }
@@ -107,13 +179,25 @@
     left: -1px;
 }
 
+=======
+    align-items: center;
+}
+
+>>>>>>> origin/main
 input {
     width: 100%;
     border: none;
     background-color: rgba(255, 255, 255, 0.05);
+<<<<<<< HEAD
     padding: 20px;
     font-size: 0.8rem;
     border-radius: 28px;
+=======
+    padding: 18px 230px 18px 54px;
+    font-size: 0.9rem;
+    border-radius: 28px;
+    color: #ececec;
+>>>>>>> origin/main
     box-shadow: rgba(0, 0, 0, 0.05) 0 54px 55px,
                 rgba(0, 0, 0, 0.05) 0 -12px 30px,
                 rgba(0, 0, 0, 0.05) 0 4px 6px,
@@ -125,10 +209,46 @@ input:focus {
     outline: none;
 }
 
+<<<<<<< HEAD
+=======
+.inputControls {
+    position: absolute;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.imageUploadBtn {
+    position: absolute;
+    left: 14px;
+    z-index: 2;
+    cursor: pointer;
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #9aa0a6;
+    background: transparent;
+    transition: all 0.2s ease;
+    border: none;
+    user-select: none;
+}
+
+.imageUploadBtn:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+>>>>>>> origin/main
 #submit {
     cursor: pointer;
     height: 35px;
     width: 35px;
+<<<<<<< HEAD
     font-size: 20px;
     position: absolute;
     right: 15px;
@@ -138,6 +258,26 @@ input:focus {
 }
 
 #submit i:hover {
+=======
+    background-color: #339cff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #fff;
+    flex-shrink: 0;
+    transition: background-color 0.2s;
+}
+
+#submit i {
+    position: relative;
+    left: -1px;
+}
+
+#submit:hover {
+    background-color: #1982ea;
+>>>>>>> origin/main
     color: #fff;
 }
 
@@ -172,4 +312,131 @@ input:focus {
     background-color: rgba(180, 180, 180, 0.1);
     border-radius: 6px;
     
+<<<<<<< HEAD
 }
+=======
+}
+
+/* Model Selector Dropdown */
+.modelSelectorWrapper {
+    position: relative;
+}
+
+.modelSelectorBtn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    color: #e3e3e3;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.modelSelectorBtn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.modelSelectorBtn i {
+    font-size: 10px;
+    color: #9aa0a6;
+}
+
+.modelDropdownMenu {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: 0;
+    width: 250px;
+    background-color: #1e1f20;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+    z-index: 1000;
+    text-align: left;
+}
+
+.modelOptionItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modelOptionItem:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.modelOptionItem.active {
+    background-color: rgba(66, 133, 244, 0.15);
+}
+
+.modelOptionInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.modelOptionTitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.modelOptionBadge {
+    font-size: 11px;
+    color: #9aa0a6;
+}
+
+.modelCheckIcon {
+    color: #4285f4;
+    font-size: 13px;
+}
+
+.modelOptionItem.locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.modelOptionItem.locked:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.modelLockIcon {
+    font-size: 11px;
+    color: #cbd5e1;
+}
+
+.modelOptionBadge.proBadge {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+    width: fit-content;
+}
+
+.modelOptionBadge.nanoBadge {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #f59e0b, #eab308);
+    color: #1a1a1a;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    width: fit-content;
+}
+>>>>>>> origin/main

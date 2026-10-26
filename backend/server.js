@@ -2,6 +2,10 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 import ChatRouter from "./routes/chat.routes.js";
+<<<<<<< HEAD
+=======
+import AuthRouter from "./routes/auth.routes.js";
+>>>>>>> origin/main
 
 
 import dns from "dns";
@@ -19,10 +23,14 @@ app.use(express.json());
 
 
 app.use("/api", ChatRouter);
+<<<<<<< HEAD
 
 app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok" });
 });
+=======
+app.use("/api/auth", AuthRouter);
+>>>>>>> origin/main
 
 app.get("/", (req, res) => {
     res.send("Hello");
@@ -39,9 +47,14 @@ const connectDB = async () => {
     }
 };
 
+<<<<<<< HEAD
 const port = process.env.PORT || 8080;
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+=======
+app.listen(8080, () => {
+    console.log(`Server is running on port 8080`);
+>>>>>>> origin/main
     connectDB();
 });
