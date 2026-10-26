@@ -3,6 +3,7 @@ import "./ChatWindow.css";
 import Chat from "./Chat.jsx";
 import { MyContext } from './MyContext.jsx';
 import { ScaleLoader } from "react-spinners";
+import { API_BASE_URL } from "./api.js";
 
 
 function ChatWindow() {
@@ -10,14 +11,17 @@ function ChatWindow() {
 
     let [loading, setLoading] = useState(false);
 
-    const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat} = useContext(MyContext);
+    const { prompt, setPrompt, reply, setReply, currThreadId, setPrevChats, setNewChat, backendStatus, setBackendStatus} = useContext(MyContext);
 
     const [isOpen, setIsOpen] = useState(false);
     
 
     const GetReply = async () => {
+        if (!prompt.trim() || loading) return;
+
         setLoading(true);
         setNewChat(false);
+        setBackendStatus("connecting");
         const Options = {
             method: "POST",
             headers: {
@@ -29,19 +33,25 @@ function ChatWindow() {
             }),
         };
 
+        let requestReachedBackend = false;
+
         try {
+            const response = await fetch(`${API_BASE_URL}/api/chat`, Options);
+            requestReachedBackend = true;
+            setBackendStatus("connected");
 
+            if (!response.ok) {
+                throw new Error(`Chat request failed (${response.status})`);
+            }
 
-            const response = await fetch("http://localhost:8080/api/chat", Options);
             const data = await response.json();
-
-
             setReply(data.reply);
-            
         } catch (err) {
-            console.log(err);
+            if (!requestReachedBackend) setBackendStatus("disconnected");
+            console.error(err);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }
 
 
@@ -80,6 +90,14 @@ function ChatWindow() {
 
             </div>
 
+            {backendStatus !== "connected" && (
+                <div className={`backendStatus ${backendStatus}`} role="status" aria-live="polite">
+                    <span className="backendStatusDot" aria-hidden="true"></span>
+                    {backendStatus === "connecting"
+                        ? "Connecting to backend. Free Render services can take up to a minute to wake after inactivity."
+                        : "Backend is unavailable. Retrying connection…"}
+                </div>
+            )}
 
             {
                 isOpen && 

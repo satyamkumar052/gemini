@@ -1,20 +1,23 @@
 import "./Sidebar.css";
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import {MyContext} from "./MyContext.jsx";
 import {v1 as uuidv1} from "uuid";
+import { API_BASE_URL } from "./api.js";
 
 
 
 function Sidebar() {
 
 
-    const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, reply } = useContext(MyContext);
+    const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, setBackendStatus } = useContext(MyContext);
 
-    const getAllThreads = async () => {
-
+    const getAllThreads = useCallback(async () => {
+        let requestReachedBackend = false;
+        setBackendStatus("connecting");
         try {
-
-            const response = await fetch("http://localhost:8080/api/thread");
+            const response = await fetch(`${API_BASE_URL}/api/thread`);
+            requestReachedBackend = true;
+            setBackendStatus("connected");
 
             const res = await response.json();
 
@@ -24,15 +27,16 @@ function Sidebar() {
             setAllThreads(filteredData);
             
         } catch (err) {
-            console.log(err);          
+            if (!requestReachedBackend) setBackendStatus("disconnected");
+            console.error(err);
         }
-    }
+    }, [setAllThreads, setBackendStatus]);
 
     useEffect(() => {
 
         getAllThreads();
 
-    }, [currThreadId]);
+    }, [currThreadId, getAllThreads]);
 
 
     const createNewChat = () => {
@@ -48,10 +52,14 @@ function Sidebar() {
     const changethread = async (newThreadId) => {
 
         setCurrThreadId(newThreadId);
+        let requestReachedBackend = false;
+        setBackendStatus("connecting");
 
         try {
             
-            const response = await fetch(`http://localhost:8080/api/thread/${newThreadId}`);
+            const response = await fetch(`${API_BASE_URL}/api/thread/${newThreadId}`);
+            requestReachedBackend = true;
+            setBackendStatus("connected");
 
             const res = await response.json();
 
@@ -61,16 +69,21 @@ function Sidebar() {
             setReply(null);
             
         } catch (err) {
-            console.log(err);
+            if (!requestReachedBackend) setBackendStatus("disconnected");
+            console.error(err);
         }
 
     }
 
 
     const deleteThread = async (threadId) => {
+        let requestReachedBackend = false;
+        setBackendStatus("connecting");
         try {
 
-            const response = await fetch(`http://localhost:8080/api/thread/${threadId}`, {method:"DELETE"});
+            const response = await fetch(`${API_BASE_URL}/api/thread/${threadId}`, {method:"DELETE"});
+            requestReachedBackend = true;
+            setBackendStatus("connected");
 
             const res = await response.json();
 
@@ -83,7 +96,8 @@ function Sidebar() {
             }
             
         } catch (err) {
-            console.log(err);
+            if (!requestReachedBackend) setBackendStatus("disconnected");
+            console.error(err);
         }
     }
 
@@ -91,7 +105,7 @@ function Sidebar() {
     return (
         <section className='sidebar'>
 
-            <button onClick={() => createNewChat()}>
+            <button onClick={createNewChat}>
                 <img className="logo" src="src/assets/imag2.png" alt="logo" />
                 <span><i className="fa-solid fa-pen-to-square"></i></span>
             </button>
@@ -102,7 +116,7 @@ function Sidebar() {
                 {
                     allThreads?.map((thread, idx) => (
                         <li key={idx} 
-                            onClick={(e) => changethread(thread.threadId)}
+                            onClick={() => changethread(thread.threadId)}
                             className={thread.threadId === currThreadId ? "highlited" : ""}
                         >
                             {thread.title}
