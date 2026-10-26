@@ -24,6 +24,33 @@
     gap: 12px;
 }
 
+/* Hamburger — only shown on mobile */
+.hamburgerBtn {
+    all: unset;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: #c5c5c5;
+    font-size: 17px;
+    transition: background 0.18s, color 0.18s;
+    flex-shrink: 0;
+}
+
+.hamburgerBtn:hover {
+    background: rgba(255,255,255,0.09);
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .hamburgerBtn {
+        display: flex;
+    }
+}
+
 .logoTitle {
     font-weight: 600;
     font-size: 20px;
@@ -149,15 +176,22 @@ input {
     width: 100%;
     border: none;
     background-color: rgba(255, 255, 255, 0.05);
-    padding: 18px 230px 18px 54px;
+    padding: 16px 110px 16px 54px;
     font-size: 0.9rem;
     border-radius: 28px;
     color: #ececec;
+    box-sizing: border-box;
     box-shadow: rgba(0, 0, 0, 0.05) 0 54px 55px,
                 rgba(0, 0, 0, 0.05) 0 -12px 30px,
                 rgba(0, 0, 0, 0.05) 0 4px 6px,
                 rgba(0, 0, 0, 0.05) 0 12px 3px,
                 rgba(0, 0, 0, 0.05) 0 -3px 5px;
+}
+
+@media (min-width: 480px) {
+    input {
+        padding: 18px 230px 18px 54px;
+    }
 }
 
 input:focus {
@@ -231,7 +265,7 @@ input:focus {
 .dropDown {
     position: absolute;
     top: 4rem;
-    right: 4rem;
+    right: 0;
     width: 150px;
     background-color: #323232;
     padding: 0.3rem 0.5rem;
@@ -376,3 +410,39 @@ input:focus {
     width: fit-content;
 }
 
+/* ═══════════════════════════════════
+   Global mobile tweaks
+═══════════════════════════════════ */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0.7rem 1rem;
+    }
+
+    .logoTitle {
+        font-size: 17px;
+    }
+
+    .modelSelectorBtn {
+        font-size: 11px;
+        padding: 5px 9px;
+        gap: 5px;
+    }
+
+    .inputBox {
+        padding: 0 0.75rem;
+    }
+
+    .chatInput {
+        padding-bottom: 0.5rem;
+    }
+
+    .modelDropdownMenu {
+        width: 210px;
+        right: 0;
+    }
+
+    .backendStatus {
+        font-size: 0.78rem;
+        padding: 0.6rem 0.8rem;
+    }
+}

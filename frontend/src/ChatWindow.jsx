@@ -19,7 +19,7 @@ function ChatWindow() {
 
     let [loading, setLoading] = useState(false);
 
-    const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat, user, logout, totalTokensUsed, setTotalTokensUsed, countPrompts, setCountPrompt, allThreads, setAllThreads, getAllThreads, skipNextFetchRef } = useContext(MyContext);
+    const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat, user, logout, totalTokensUsed, setTotalTokensUsed, countPrompts, setCountPrompt, allThreads, setAllThreads, getAllThreads, skipNextFetchRef, sidebarOpen, setSidebarOpen } = useContext(MyContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -34,6 +34,24 @@ function ChatWindow() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    // ── Backend wake-up status (Render free-tier cold starts) ──
+    const [backendStatus, setBackendStatus] = useState('checking'); // 'checking' | 'ok' | 'error'
+
+    useEffect(() => {
+        let cancelled = false;
+        const ping = async () => {
+            try {
+                await clientServer.get('/api/health', { timeout: 30000 });
+                if (!cancelled) setBackendStatus('ok');
+            } catch {
+                if (!cancelled) setBackendStatus('error');
+            }
+        };
+        ping();
+        return () => { cancelled = true; };
+    }, []);
+
     const maxPrompts = user ? 10 : 5;
 
     const MODELS = [
@@ -194,6 +212,19 @@ function ChatWindow() {
     const handleImageSelect = (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
+        // Guard: reject files over 15 MB (base64 overhead would exceed 20 MB server limit)
+        if (file.size > 15 * 1024 * 1024) {
+            toast.error("Image too large (max 15 MB). Please choose a smaller file.");
+            e.target.value = "";
+            return;
+        }
+
+        // Inform user that GIFs are treated as a static image by Gemini
+        if (file.type === "image/gif") {
+            toast.info("GIFs are sent as a static image — only the first frame will be analysed.", { autoClose: 4000 });
+        }
+
         const reader = new FileReader();
         reader.onloadend = () => {
             setSelectedImage({
@@ -216,7 +247,13 @@ function ChatWindow() {
     return (
         <div className="chatWindow">
             <div className="navbar">
-                <span className="logoTitle"><a href="https://gemini-blue-six.vercel.app/" style={{cursor:"pointer", textDecoration:"none"}}>Gemini</a></span>
+                <div className="navbarLeft">
+                    {/* Hamburger — mobile only */}
+                    <button className="hamburgerBtn" onClick={() => setSidebarOpen(o => !o)} aria-label="Toggle sidebar">
+                        <i className="fa-solid fa-bars"></i>
+                    </button>
+                    <span className="logoTitle"><a href="https://gemini-blue-six.vercel.app/" style={{cursor:"pointer", textDecoration:"none"}}>Gemini</a></span>
+                </div>
                 <div ref={dropdownRef} style={{ position: "relative" }}>
                     <div className="userIconDiv" onClick={handleProfileClick}>
                         <span className="userIcon">
@@ -257,6 +294,16 @@ function ChatWindow() {
                 </div>
 
             </div>
+
+            {/* Backend wake-up banner — shown while Render cold-starts */}
+            {backendStatus !== 'ok' && (
+                <div className={`backendStatus${backendStatus === 'error' ? ' disconnected' : ''}`}>
+                    <span className="backendStatusDot"></span>
+                    {backendStatus === 'checking'
+                        ? 'Waking up backend, please wait a moment…'
+                        : 'Backend unreachable. Please refresh or try again later.'}
+                </div>
+            )}
 
             <Chat></Chat>
 

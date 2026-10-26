@@ -1,9 +1,17 @@
 .chats {
+    width: 100%;
     max-width: 43.75rem;
     overflow-y: auto;
     margin: 0 auto;
-    padding: 8rem;
+    padding: 2rem 1.25rem 1rem;
     scrollbar-gutter: stable;
+    box-sizing: border-box;
+}
+
+@media (min-width: 600px) {
+    .chats {
+        padding: 3rem 2rem 1rem;
+    }
 }
 
 .userDiv {
@@ -20,7 +28,7 @@
     background-color: hsl(210, 5%, 16%);
     padding: 10px 20px;
     border-radius: 20px;
-    margin-left: 15rem;
+    margin-left: clamp(2rem, 20%, 15rem);
     max-width: 500px;
     width: fit-content;
     border-top-right-radius: 5px !important;

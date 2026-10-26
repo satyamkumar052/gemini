@@ -2,14 +2,111 @@
     background-color: #1a1b1e;
     color: #c5c5c5;
     height: 100vh;
-    width: 25%;
+    width: 260px;
+    min-width: 260px;
     display: flex;
     flex-direction: column;
     gap: 4px;
     overflow: hidden;
     border-right: 1px solid rgba(255, 255, 255, 0.06);
+    transition: width 0.25s ease, min-width 0.25s ease;
+    flex-shrink: 0;
 }
 
+/* ── Mobile: sidebar is hidden by default, slides in when open ── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 500;
+        width: 75vw;
+        max-width: 280px;
+        min-width: unset;
+        transform: translateX(-100%);
+        transition: transform 0.28s ease;
+        box-shadow: none;
+    }
+
+    .sidebar.sidebar--open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* ── Desktop: sidebar--open means COLLAPSED (icon rail) ── */
+@media (min-width: 769px) {
+    .sidebar.sidebar--open {
+        width: 60px;
+        min-width: 60px;
+    }
+
+    /* hide text labels when collapsed */
+    .sidebar.sidebar--open .brand-name,
+    .sidebar.sidebar--open .new-chat-pill span,
+    .sidebar.sidebar--open .section-label,
+    .sidebar.sidebar--open .thread-title,
+    .sidebar.sidebar--open .thread-delete,
+    .sidebar.sidebar--open .user-name,
+    .sidebar.sidebar--open .sign-in-text,
+    .sidebar.sidebar--open .no-chats {
+        display: none;
+    }
+
+    /* Centre items in collapsed rail */
+    .sidebar.sidebar--open .sidebar-header {
+        justify-content: center;
+        padding: 18px 0 10px;
+    }
+
+    .sidebar.sidebar--open .sidebar-brand {
+        display: none;
+    }
+
+    .sidebar.sidebar--open .new-chat-pill {
+        justify-content: center;
+        padding: 10px 0;
+        margin: 4px 6px 8px;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        align-self: center;
+    }
+
+    .sidebar.sidebar--open .history li {
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    .sidebar.sidebar--open .user-info {
+        justify-content: center;
+    }
+}
+
+/* ── Mobile overlay ── */
+.sidebar-overlay {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 499;
+        animation: fadeIn 0.2s ease;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ═══════════════════════════════════
+   Header
+═══════════════════════════════════ */
 .sidebar-header {
     display: flex;
     align-items: center;
@@ -22,6 +119,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    overflow: hidden;
 }
 
 .logo {
@@ -39,14 +137,15 @@
     font-weight: 600;
     color: #e8e8e8;
     letter-spacing: 0.01em;
+    white-space: nowrap;
 }
 
-/* icon-only button in header */
+/* hamburger / toggle button */
 .new-chat-btn {
     all: unset;
     cursor: pointer;
     color: #c5c5c5;
-    font-size: 18px;
+    font-size: 17px;
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -54,6 +153,7 @@
     align-items: center;
     justify-content: center;
     transition: background 0.18s, color 0.18s;
+    flex-shrink: 0;
 }
 
 .new-chat-btn:hover {
@@ -61,6 +161,9 @@
     color: #fff;
 }
 
+/* ═══════════════════════════════════
+   New-chat pill
+═══════════════════════════════════ */
 .new-chat-pill {
     display: flex;
     align-items: center;
@@ -76,17 +179,23 @@
     transition: background 0.18s;
     user-select: none;
     flex-shrink: 0;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .new-chat-pill i {
     font-size: 14px;
     color: #8ab4f8;
+    flex-shrink: 0;
 }
 
 .new-chat-pill:hover {
     background-color: #35363b;
 }
 
+/* ═══════════════════════════════════
+   All Chats section
+═══════════════════════════════════ */
 .chats-section {
     flex: 1;
     display: flex;
@@ -107,8 +216,13 @@
     text-transform: uppercase;
     color: #6e6e6e;
     flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
+/* ═══════════════════════════════════
+   Thread list
+═══════════════════════════════════ */
 .history {
     list-style: none;
     margin: 0;
@@ -139,6 +253,7 @@
     position: relative;
     transition: background 0.15s;
     white-space: nowrap;
+    overflow: hidden;
 }
 
 .thread-title {
@@ -169,7 +284,6 @@
     border-radius: 10px;
 }
 
-/* trash icon */
 .thread-delete {
     opacity: 0;
     flex-shrink: 0;
@@ -187,10 +301,14 @@
     color: #f87171 !important;
 }
 
+/* ═══════════════════════════════════
+   Footer / user info
+═══════════════════════════════════ */
 .sign {
     padding: 12px 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.07);
     flex-shrink: 0;
+    overflow: hidden;
 }
 
 .user-info {
@@ -201,6 +319,7 @@
     border-radius: 10px;
     transition: background 0.15s;
     cursor: default;
+    overflow: hidden;
 }
 
 .user-info:hover {

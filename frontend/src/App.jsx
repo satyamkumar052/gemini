@@ -30,6 +30,7 @@ function ChatLayout() {
 
     const [countPrompts, setCountPrompt] = useState(0);
     const [totalTokensUsed, setTotalTokensUsed] = useState(0);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const skipNextFetchRef = useRef(false);
     
@@ -69,7 +70,8 @@ function ChatLayout() {
         user, setUser, logout,
         countPrompts, setCountPrompt,
         totalTokensUsed, setTotalTokensUsed,
-        skipNextFetchRef
+        skipNextFetchRef,
+        sidebarOpen, setSidebarOpen
     };
 
     useEffect(() => {
@@ -95,6 +97,12 @@ function ChatLayout() {
             })
             .catch(err => {
                 console.log(err);
+                const status = err?.response?.status;
+                if (status === 404) {
+                    toast.error("This chat doesn't exist or was deleted.");
+                } else {
+                    toast.error("Failed to load chat. Redirecting home.");
+                }
                 navigation("/");
             });
         } else {
