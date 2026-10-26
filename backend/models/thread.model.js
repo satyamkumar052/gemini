@@ -10,8 +10,6 @@ const MessageSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-<<<<<<< HEAD
-=======
     image: {
         data: {
             type : String,
@@ -22,7 +20,6 @@ const MessageSchema = new mongoose.Schema({
             default: null,
         }
     },
->>>>>>> origin/main
     timeStamp : {
         type : Date,
         default : Date.now
@@ -36,14 +33,11 @@ const ThreadSchema = new mongoose.Schema({
         required : true,
         unique : true
     },
-<<<<<<< HEAD
-=======
     userId: {
         type : mongoose.Schema.Types.ObjectId,
         ref: "User",
         default: null
     },
->>>>>>> origin/main
     title :{
         type : String,
         default : "New Chat"
@@ -56,8 +50,6 @@ const ThreadSchema = new mongoose.Schema({
     updatedAt : {
         type : Date,
         default : Date.now
-<<<<<<< HEAD
-=======
     },
     prompts: {
         type: Number,
@@ -66,7 +58,6 @@ const ThreadSchema = new mongoose.Schema({
     totalTokensUsed: {
         type: Number,
         default: 0,
->>>>>>> origin/main
     }
 });
 

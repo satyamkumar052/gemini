@@ -14,18 +14,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-<<<<<<< HEAD
-}
-
-.navbar span {
-    margin: 1rem 2rem;
-    font-weight: 500;
-    font-size: 20px;
-}
-
-.userIconDiv {
-    margin: 1rem 2rem;
-=======
     padding: 0.8rem 1.5rem;
     box-sizing: border-box;
 }
@@ -46,7 +34,6 @@
 
 .userIconDiv {
     cursor: pointer;
->>>>>>> origin/main
 }
 
 .userIcon {
@@ -60,7 +47,6 @@
     cursor: pointer;
 }
 
-<<<<<<< HEAD
 .backendStatus {
     box-sizing: border-box;
     width: calc(100% - 2rem);
@@ -98,9 +84,6 @@
     }
 }
 
-/* chat Input */
-
-=======
 /* Image Preview Thumbnail */
 .imagePreviewContainer {
     position: relative;
@@ -146,7 +129,6 @@
 }
 
 /* chat Input */
->>>>>>> origin/main
 .chatInput {
     width: 100%;
     display: flex;
@@ -160,44 +142,17 @@
     position: relative;
     max-width: 43.75rem;
     display: flex;
-<<<<<<< HEAD
-    justify-content: space-between;
     align-items: center;
 }
 
-.inputBox > div {
-    background-color: #339cff;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.inputBox div i {
-    font-size: 1rem;
-    position: relative;
-    left: -1px;
-}
-
-=======
-    align-items: center;
-}
-
->>>>>>> origin/main
 input {
     width: 100%;
     border: none;
     background-color: rgba(255, 255, 255, 0.05);
-<<<<<<< HEAD
-    padding: 20px;
-    font-size: 0.8rem;
-    border-radius: 28px;
-=======
     padding: 18px 230px 18px 54px;
     font-size: 0.9rem;
     border-radius: 28px;
     color: #ececec;
->>>>>>> origin/main
     box-shadow: rgba(0, 0, 0, 0.05) 0 54px 55px,
                 rgba(0, 0, 0, 0.05) 0 -12px 30px,
                 rgba(0, 0, 0, 0.05) 0 4px 6px,
@@ -209,8 +164,6 @@ input:focus {
     outline: none;
 }
 
-<<<<<<< HEAD
-=======
 .inputControls {
     position: absolute;
     right: 12px;
@@ -243,22 +196,10 @@ input:focus {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
->>>>>>> origin/main
 #submit {
     cursor: pointer;
     height: 35px;
     width: 35px;
-<<<<<<< HEAD
-    font-size: 20px;
-    position: absolute;
-    right: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#submit i:hover {
-=======
     background-color: #339cff;
     border-radius: 50%;
     display: flex;
@@ -277,7 +218,6 @@ input:focus {
 
 #submit:hover {
     background-color: #1982ea;
->>>>>>> origin/main
     color: #fff;
 }
 
@@ -311,10 +251,6 @@ input:focus {
 .dropDownItem:hover {
     background-color: rgba(180, 180, 180, 0.1);
     border-radius: 6px;
-    
-<<<<<<< HEAD
-}
-=======
 }
 
 /* Model Selector Dropdown */
@@ -439,4 +375,4 @@ input:focus {
     border-radius: 4px;
     width: fit-content;
 }
->>>>>>> origin/main
+

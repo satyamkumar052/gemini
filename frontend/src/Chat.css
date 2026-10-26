@@ -26,8 +26,6 @@
     border-top-right-radius: 5px !important;
 }
 
-<<<<<<< HEAD
-=======
 .chatBubbleImage {
     max-width: 100%;
     max-height: 260px;
@@ -77,7 +75,6 @@
     transform: scale(1.01);
 }
 
->>>>>>> origin/main
 .chats::-webkit-scrollbar {
     width: 6px;
 }

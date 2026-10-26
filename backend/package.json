@@ -6,10 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon server.js",
-<<<<<<< HEAD
     "start": "node server.js",
-=======
->>>>>>> origin/main
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,17 +14,11 @@
   "license": "ISC",
   "dependencies": {
     "@google/genai": "^2.24.0",
-<<<<<<< HEAD
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-=======
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
->>>>>>> origin/main
     "mongoose": "^9.1.5",
     "nodemon": "^3.1.11"
   }

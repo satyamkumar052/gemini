@@ -50,11 +50,6 @@ function Chat() {
                         return(<div className={chat.role === "user" ? "userDiv" : "gptDiv"} key={idx}>
                             {
                                 chat.role === "user" ?
-<<<<<<< HEAD
-                                    <p className="userMessage">{chat.content}</p>
-                                    :
-                                    <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{chat.content}</ReactMarkDown>
-=======
                                     <div className="userMessage">
                                         {chat.image?.data && (
                                             <img
@@ -78,7 +73,6 @@ function Chat() {
                                         )}
                                         <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{chat.content}</ReactMarkDown>
                                     </div>
->>>>>>> origin/main
                             }
                         </div>)
                     })
@@ -89,8 +83,6 @@ function Chat() {
                     prevChats.length > 0 && latestReply !==null && 
 
                     <div className='gptDiv' key={"typing"}>
-<<<<<<< HEAD
-=======
                         {prevChats[prevChats.length - 1]?.image?.data && (
                             <div className='generatedImageWrapper'>
                                 <img
@@ -100,7 +92,6 @@ function Chat() {
                                 />
                             </div>
                         )}
->>>>>>> origin/main
                         <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{latestReply}</ReactMarkDown>
                     </div>
                 }
@@ -108,11 +99,6 @@ function Chat() {
                 {
                     prevChats.length > 0 && latestReply ===null && 
 
-<<<<<<< HEAD
-                    <div className='gptDiv' key={"non-typing"}>
-                        <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{prevChats[prevChats.length-1].content}</ReactMarkDown>
-                    </div>
-=======
                     (prevChats[prevChats.length - 1].role === "user" ? (
                         <div className="userDiv" key={"last-user"}>
                             <div className="userMessage">
@@ -142,7 +128,6 @@ function Chat() {
                             <ReactMarkDown rehypePlugins={[rehypeHighlight]}>{prevChats[prevChats.length-1].content}</ReactMarkDown>
                         </div>
                     ))
->>>>>>> origin/main
                 }
 
 
