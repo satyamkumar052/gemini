@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import "./ChatWindow.css";
 import Chat from "./Chat.jsx";
 import { MyContext } from './MyContext.jsx';
@@ -22,6 +22,18 @@ function ChatWindow() {
     const { prompt, setPrompt, reply, setReply, currThreadId, setCurrThreadId, prevChats, setPrevChats, setNewChat, user, logout, totalTokensUsed, setTotalTokensUsed, countPrompts, setCountPrompt, allThreads, setAllThreads, getAllThreads, skipNextFetchRef } = useContext(MyContext);
 
     const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
     const maxPrompts = user ? 10 : 5;
 
     const MODELS = [
@@ -204,47 +216,47 @@ function ChatWindow() {
     return (
         <div className="chatWindow">
             <div className="navbar">
-                <span className="logoTitle">Gemini</span>
-                <div className="userIconDiv" onClick={handleProfileClick}>
-                    <span className="userIcon">
-                        {user ? (
-                            <strong style={{ fontSize: "14px", color: "#fff" }}>{user.name?.charAt(0).toUpperCase()}</strong>
-                        ) : (
-                            <i className="fa-solid fa-user"></i>
-                        )}
-                    </span>
+                <span className="logoTitle"><a href="https://gemini-blue-six.vercel.app/" style={{cursor:"pointer", textDecoration:"none"}}>Gemini</a></span>
+                <div ref={dropdownRef} style={{ position: "relative" }}>
+                    <div className="userIconDiv" onClick={handleProfileClick}>
+                        <span className="userIcon">
+                            {user ? (
+                                <strong style={{ fontSize: "14px", color: "#fff" }}>{user.name?.charAt(0).toUpperCase()}</strong>
+                            ) : (
+                                <i className="fa-solid fa-user"></i>
+                            )}
+                        </span>
+                    </div>
+
+                    {isOpen && 
+                        <div className='dropDown' style={{userSelect:"none"}}>
+                            {user ? (
+                                <>
+                                    <div className='dropDownItem' style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "6px", cursor: "default" }}>
+                                        <span style={{ fontWeight: "600", color: "#fff", display: "block" }}>{user.name}</span>
+                                        <small style={{ color: "#9aa0a6", fontSize: "0.75rem" }}>{user.email}</small>
+                                    </div>
+                                    <div className='dropDownItem'><i className="fa-solid fa-cloud-arrow-up"></i> Upgrade plan</div>
+                                    <div className='dropDownItem'><i className="fa-solid fa-gear"></i> Settings</div>
+                                    <div className='dropDownItem' onClick={() => { setIsOpen(false); logout(); }}>
+                                        <i className="fa-solid fa-arrow-right-from-bracket"></i> Log out
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className='dropDownItem' onClick={() => { setIsOpen(false); navigation("/login"); }}>
+                                        <i className="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+                                    </div>
+                                    <div className='dropDownItem' onClick={() => { setIsOpen(false); navigation("/signup"); }}>
+                                        <i className="fa-solid fa-user-plus"></i> Sign Up
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    }
                 </div>
+
             </div>
-
-
-            {
-                isOpen && 
-                <div className='dropDown' style={{userSelect:"none"}}>
-                    {user ? (
-                        <>
-                            <div className='dropDownItem' style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "6px", cursor: "default" }}>
-                                <span style={{ fontWeight: "600", color: "#fff", display: "block" }}>{user.name}</span>
-                                <small style={{ color: "#9aa0a6", fontSize: "0.75rem" }}>{user.email}</small>
-                            </div>
-                            <div className='dropDownItem'><i className="fa-solid fa-cloud-arrow-up"></i> Upgrade plan</div>
-                            <div className='dropDownItem'><i className="fa-solid fa-gear"></i> Settings</div>
-                            <div className='dropDownItem' onClick={() => { setIsOpen(false); logout(); }}>
-                                <i className="fa-solid fa-arrow-right-from-bracket"></i> Log out
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <div className='dropDownItem' onClick={() => { setIsOpen(false); navigation("/login"); }}>
-                                <i className="fa-solid fa-arrow-right-to-bracket"></i> Sign In
-                            </div>
-                            <div className='dropDownItem' onClick={() => { setIsOpen(false); navigation("/signup"); }}>
-                                <i className="fa-solid fa-user-plus"></i> Sign Up
-                            </div>
-                        </>
-                    )}
-
-                </div>
-            }
 
             <Chat></Chat>
 

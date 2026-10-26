@@ -1,25 +1,25 @@
 import "./Sidebar.css";
 import React, { useContext, useEffect } from 'react';
-import {MyContext} from "./MyContext.jsx";
-import {v1 as uuidv1} from "uuid";
+import { MyContext } from "./MyContext.jsx";
+import { v1 as uuidv1 } from "uuid";
 import { clientServer } from "./clientServer.js";
 import { useNavigate } from "react-router-dom";
-
-
+import logo from "./assets/imag2.png";
 
 function Sidebar() {
-
-
-    const {allThreads, setAllThreads, getAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, user } = useContext(MyContext);
+    const {
+        allThreads, setAllThreads, getAllThreads,
+        currThreadId, setNewChat, setPrompt, setReply,
+        setCurrThreadId, setPrevChats, user
+    } = useContext(MyContext);
 
     const navigation = useNavigate();
 
     useEffect(() => {
-        if(user && getAllThreads) {
+        if (user && getAllThreads) {
             getAllThreads();
         }
     }, [user]);
-
 
     const createNewChat = () => {
         setNewChat(true);
@@ -29,91 +29,93 @@ function Sidebar() {
         navigation("/");
     };
 
-
-
-    const changethread = async (newThreadId) => {
+    const changeThread = async (newThreadId) => {
         setCurrThreadId(newThreadId);
         navigation(`/${newThreadId}`);
-    }
-
+    };
 
     const deleteThread = async (threadId) => {
         try {
-
-            const response = await clientServer.delete(`/api/thread/${threadId}`);
-
-            const res = response.data;
-
-            setAllThreads(prev => prev.filter(thread => thread.threadId !== threadId));
-
-            if(threadId === currThreadId) {
-                navigation("/");
-            }
-            
+            await clientServer.delete(`/api/thread/${threadId}`);
+            setAllThreads(prev => prev.filter(t => t.threadId !== threadId));
+            if (threadId === currThreadId) navigation("/");
         } catch (err) {
             console.log(err);
         }
-    }
-
+    };
 
     return (
-        <section className='sidebar'>
+        <section className="sidebar">
 
-            <button onClick={() => createNewChat()}>
-                <img className="logo" src="src/assets/imag2.png" alt="logo" />
-                <span><i className="fa-solid fa-pen-to-square"></i></span>
-            </button>
+            {/* ── Header ── */}
+            <div className="sidebar-header">
+                <div className="sidebar-brand">
+                    <img className="logo" src={logo} alt="Gemini logo" />
+                    <span className="brand-name">Gemini</span>
+                </div>
 
-            
-            <ul className="history">
+                {/* New Chat button */}
+                <button className="new-chat-btn" onClick={createNewChat} title="New chat">
+                    <i className="fa-regular fa-pen-to-square"></i>
+                </button>
+            </div>
 
-                {
-                    allThreads?.map((thread, idx) => (
-                        <li key={idx} 
-                            onClick={(e) => changethread(thread.threadId)}
-                            className={thread.threadId === currThreadId ? "highlited" : ""}
-                        >
-                            {thread.title}
-                            <i className="fa-regular fa-trash-can" onClick={(e) => {
-                                e.stopPropagation();
-                                deleteThread(thread.threadId);
-                            }}></i>
-                        </li>
-                    ))
-                }
+            {/* ── New Chat pill (prominent) ── */}
+            <div className="new-chat-pill" onClick={createNewChat}>
+                <i className="fa-solid fa-plus"></i>
+                <span>New chat</span>
+            </div>
 
-            </ul>
+            {/* ── All Chats Section ── */}
+            <div className="chats-section">
+                <div className="section-label">
+                    <span>All chats</span>
+                </div>
 
+                <ul className="history">
+                    {allThreads && allThreads.length > 0 ? (
+                        allThreads.map((thread, idx) => (
+                            <li
+                                key={idx}
+                                onClick={() => changeThread(thread.threadId)}
+                                className={thread.threadId === currThreadId ? "highlighted" : ""}
+                            >
+                                <span className="thread-title">{thread.title}</span>
+                                <i
+                                    className="fa-regular fa-trash-can thread-delete"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        deleteThread(thread.threadId);
+                                    }}
+                                />
+                            </li>
+                        ))
+                    ) : (
+                        <li className="no-chats">No chats yet</li>
+                    )}
+                </ul>
+            </div>
 
-            <div className="sign" onClick={() => !user && navigation("/login")} style={{ cursor: !user ? "pointer" : "default" }}>
+            {/* ── Footer / User ── */}
+            <div
+                className="sign"
+                onClick={() => !user && navigation("/login")}
+                style={{ cursor: !user ? "pointer" : "default" }}
+            >
                 {user ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: "center" }}>
-                        <span style={{
-                            width: "28px",
-                            height: "28px",
-                            borderRadius: "50%",
-                            backgroundColor: "#339cff",
-                            color: "#fff",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontWeight: "bold",
-                            fontSize: "13px",
-                            userSelect:"none",
-                        }}>
+                    <div className="user-info">
+                        <span className="user-avatar">
                             {user.name ? user.name.charAt(0).toUpperCase() : "U"}
                         </span>
-                        <span style={{ maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: "0.95rem" }}>
-                            {user.name}
-                        </span>
+                        <span className="user-name">{user.name}</span>
                     </div>
                 ) : (
-                    <p style={{ margin: 0 }}>Sign In</p>
+                    <p className="sign-in-text">Sign In</p>
                 )}
             </div>
-            
+
         </section>
     );
 }
 
-export default Sidebar;
+export default Sidebar;
