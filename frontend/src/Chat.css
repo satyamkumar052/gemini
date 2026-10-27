@@ -110,3 +110,56 @@
 pre {
     white-space: pre-wrap;
 }
+
+.skeleton-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 8px 0;
+    animation: skeletonFadeIn 0.2s ease;
+}
+
+@keyframes skeletonFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.skeleton {
+    border-radius: 16px;
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.06) 0%,
+        rgba(255,255,255,0.12) 40%,
+        rgba(255,255,255,0.06) 80%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite linear;
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-user {
+    height: 40px;
+    width: 55%;
+    border-top-right-radius: 4px;
+    margin-left: auto;
+}
+
+.skeleton-user-sm {
+    width: 35%;
+}
+
+.skeleton-bot-lg {
+    height: 100px;
+    width: 85%;
+    border-top-left-radius: 4px;
+}
+
+.skeleton-bot-md {
+    height: 64px;
+    width: 70%;
+    border-top-left-radius: 4px;
+}

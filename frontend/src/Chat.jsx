@@ -10,7 +10,7 @@ import "highlight.js/styles/github-dark.css";
 function Chat() {
 
 
-    const {newChat, prevChats, reply} = useContext(MyContext);
+    const {newChat, prevChats, reply, threadLoading} = useContext(MyContext);
 
     const [latestReply, setLatestReply] = useState(null);
 
@@ -42,6 +42,20 @@ function Chat() {
     return (
         <>
             {newChat && <h1>Start a New Chat</h1>}
+
+            {/* ── Thread loading skeleton ── */}
+            {threadLoading && (
+                <div className="chats">
+                    <div className="skeleton-wrap">
+                        <div className="userDiv"><div className="skeleton skeleton-user"></div></div>
+                        <div className="gptDiv"><div className="skeleton skeleton-bot-lg"></div></div>
+                        <div className="userDiv"><div className="skeleton skeleton-user skeleton-user-sm"></div></div>
+                        <div className="gptDiv"><div className="skeleton skeleton-bot-md"></div></div>
+                    </div>
+                </div>
+            )}
+
+            {!threadLoading && (
             <div className='chats'>
 
                 
@@ -132,6 +146,7 @@ function Chat() {
 
 
             </div>
+            )}
         </>
     );
 }

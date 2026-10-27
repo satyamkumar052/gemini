@@ -31,6 +31,7 @@ function ChatLayout() {
     const [countPrompts, setCountPrompt] = useState(0);
     const [totalTokensUsed, setTotalTokensUsed] = useState(0);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [threadLoading, setThreadLoading] = useState(false);
 
     const skipNextFetchRef = useRef(false);
     
@@ -71,7 +72,8 @@ function ChatLayout() {
         countPrompts, setCountPrompt,
         totalTokensUsed, setTotalTokensUsed,
         skipNextFetchRef,
-        sidebarOpen, setSidebarOpen
+        sidebarOpen, setSidebarOpen,
+        threadLoading, setThreadLoading
     };
 
     useEffect(() => {
@@ -86,6 +88,7 @@ function ChatLayout() {
 
             setReply(null);
 
+            setThreadLoading(true);
             clientServer.get(`/api/thread/${threadId}`)
             .then(res => {
                 const messages = Array.isArray(res.data) ? res.data : (res.data?.messages || []);
@@ -104,6 +107,9 @@ function ChatLayout() {
                     toast.error("Failed to load chat. Redirecting home.");
                 }
                 navigation("/");
+            })
+            .finally(() => {
+                setThreadLoading(false);
             });
         } else {
             setCurrThreadId(uuidv1());
